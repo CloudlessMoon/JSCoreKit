@@ -1,0 +1,11 @@
+platform :ios, '9.0'
+
+source 'https://github.com/CocoaPods/Specs.git'
+
+target 'JSCoreKitExample' do
+  pod 'JSCoreKit', :path => '..'
+  pod 'LookinServer', :configurations => ['Debug']
+  pod 'MLeaksFinder', :configurations => ['Debug']
+end
+
+
