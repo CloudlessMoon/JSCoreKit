@@ -11,6 +11,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <os/lock.h>
 #import <objc/runtime.h>
 #import "JSCoreWeakProxy.h"
 #import "NSNumber+JSCore.h"
