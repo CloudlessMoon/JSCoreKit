@@ -7,23 +7,28 @@
 
 #import "JSCoreHelper.h"
 #import "NSObject+JSCore.h"
+#import "JSCoreCommonDefines.h"
 
 @implementation JSCoreHelper
 
-static NSMutableSet<NSString *> *executedIdentifiers;
 + (BOOL)executeBlock:(void (NS_NOESCAPE ^)(void))block oncePerIdentifier:(NSString *)identifier {
     if (!block || identifier.length <= 0) return NO;
-    @synchronized (self) {
-        if (!executedIdentifiers) {
-            executedIdentifiers = NSMutableSet.new;
-        }
-        if (![executedIdentifiers containsObject:identifier]) {
-            [executedIdentifiers addObject:identifier];
-            block();
-            return YES;
-        }
-        return NO;
+    static dispatch_once_t onceToken;
+    static NSMutableSet<NSString *> *_executedIdentifiers;
+    static JSLockDeclare(_lock);
+    dispatch_once(&onceToken, ^{
+        _executedIdentifiers = [NSMutableSet set];
+        JSLockInit(_lock);
+    });
+    JSLockAdd(_lock);
+    BOOL result = NO;
+    if (![_executedIdentifiers containsObject:identifier]) {
+        [_executedIdentifiers addObject:identifier];
+        block();
+        result = YES;
     }
+    JSLockRemove(_lock);
+    return result;
 }
 
 @end

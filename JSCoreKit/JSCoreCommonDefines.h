@@ -122,12 +122,12 @@ _Pragma("clang diagnostic pop")
 #define JSLockInit(lock) lock = OS_UNFAIR_LOCK_INIT;
 #endif
 
-#ifndef JSAddLock
-#define JSAddLock(lock) os_unfair_lock_lock(&lock);
+#ifndef JSLockAdd
+#define JSLockAdd(lock) os_unfair_lock_lock(&lock);
 #endif
 
-#ifndef JSUnLock
-#define JSUnLock(lock) os_unfair_lock_unlock(&lock);
+#ifndef JSLockRemove
+#define JSLockRemove(lock) os_unfair_lock_unlock(&lock);
 #endif
 
 #pragma mark - CGFloat
