@@ -1,5 +1,5 @@
 //
-//  NSNumber+JSFoundation.h
+//  NSNumber+JSCore.h
 //  JSCoreKit
 //
 //  Created by jiasong on 2020/8/24.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NSNumber (JSFoundation)
+@interface NSNumber (JSCore)
 
 - (CGFloat)js_CGFloatValue;
 

@@ -1,14 +1,14 @@
 //
-//  JSWeakProxy.m
+//  JSCoreWeakProxy.m
 //  JSCoreKit
 //
 //  Created by jiasong on 2020/8/24.
 //  Copyright © 2020 jiasong. All rights reserved.
 //
 
-#import "JSWeakProxy.h"
+#import "JSCoreWeakProxy.h"
 
-@implementation JSWeakProxy
+@implementation JSCoreWeakProxy
 
 + (instancetype)proxyWithTarget:(id)target {
     return [[self alloc] initWithTarget:target];

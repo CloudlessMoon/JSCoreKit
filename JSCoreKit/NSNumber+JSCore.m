@@ -1,14 +1,14 @@
 //
-//  NSNumber+JSFoundation.m
+//  NSNumber+JSCore.m
 //  JSCoreKit
 //
 //  Created by jiasong on 2020/8/24.
 //  Copyright © 2020 jiasong. All rights reserved.
 //
 
-#import "NSNumber+JSFoundation.h"
+#import "NSNumber+JSCore.h"
 
-@implementation NSNumber (JSFoundation)
+@implementation NSNumber (JSCore)
 
 - (CGFloat)js_CGFloatValue {
 #if CGFLOAT_IS_DOUBLE

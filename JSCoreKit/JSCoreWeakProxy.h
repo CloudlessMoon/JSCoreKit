@@ -1,5 +1,5 @@
 //
-//  JSWeakProxy.h
+//  JSCoreWeakProxy.h
 //  JSCoreKit
 //
 //  Created by jiasong on 2020/8/24.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface JSWeakProxy : NSProxy
+@interface JSCoreWeakProxy : NSProxy
 
 @property (nonatomic, weak, readonly) id target;
 

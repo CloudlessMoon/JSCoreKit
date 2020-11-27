@@ -1,5 +1,5 @@
 //
-//  UIView+JSLayout.h
+//  UIView+JSCoreLayout.h
 //  JSCoreKit
 //
 //  Created by jiasong on 2020/8/24.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UIView (JSLayout)
+@interface UIView (JSCoreLayout)
 
 /// 等价于 CGRectGetMinY(frame)
 @property (nonatomic, assign) CGFloat js_top;

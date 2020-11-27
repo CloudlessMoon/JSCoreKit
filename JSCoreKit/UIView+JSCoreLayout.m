@@ -1,15 +1,15 @@
 //
-//  UIView+JSLayout.m
+//  UIView+JSCoreLayout.m
 //  JSCoreKit
 //
 //  Created by jiasong on 2020/8/24.
 //  Copyright © 2020 jiasong. All rights reserved.
 //
 
-#import "UIView+JSLayout.h"
-#import "JSCommonDefines.h"
+#import "UIView+JSCoreLayout.h"
+#import "JSCoreCommonDefines.h"
 
-@implementation UIView (JSLayout)
+@implementation UIView (JSCoreLayout)
 
 - (CGFloat)js_top {
     return CGRectGetMinY(self.frame);

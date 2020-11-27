@@ -12,8 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
-#import "JSWeakProxy.h"
-#import "NSNumber+JSFoundation.h"
+#import "JSCoreWeakProxy.h"
+#import "NSNumber+JSCore.h"
 
 #pragma mark - Clang
 
@@ -44,11 +44,11 @@ _Pragma("clang diagnostic pop")
 _Pragma("clang diagnostic push") _Pragma(JSClangWarningConcat("-Wmismatched-parameter-types")) _Pragma(JSClangWarningConcat("-Wmismatched-return-types"))\
 static char kAssociatedObjectKey_##_getterName;\
 - (void)_setterName:(id)_getterName {\
-objc_setAssociatedObject(self, &kAssociatedObjectKey_##_getterName, [[JSWeakProxy alloc] initWithTarget:_getterName], OBJC_ASSOCIATION_RETAIN_NONATOMIC);\
+objc_setAssociatedObject(self, &kAssociatedObjectKey_##_getterName, [[JSCoreWeakProxy alloc] initWithTarget:_getterName], OBJC_ASSOCIATION_RETAIN_NONATOMIC);\
 }\
 \
 - (id)_getterName {\
-return ((JSWeakProxy *)objc_getAssociatedObject(self, &kAssociatedObjectKey_##_getterName)).target;\
+return ((JSCoreWeakProxy *)objc_getAssociatedObject(self, &kAssociatedObjectKey_##_getterName)).target;\
 }\
 _Pragma("clang diagnostic pop")
 
@@ -110,6 +110,24 @@ _Pragma("clang diagnostic pop")
 
 /// @property (nonatomic, assign) UIEdgeInsets xxx
 #define JSSynthesizeUIEdgeInsetsProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, UIEdgeInsets, valueWithUIEdgeInsets, UIEdgeInsetsValue)
+
+#pragma mark - Lock
+
+#ifndef JSLockDeclare
+#define JSLockDeclare(lock) os_unfair_lock lock;
+#endif
+
+#ifndef JSLockInit
+#define JSLockInit(lock) lock = OS_UNFAIR_LOCK_INIT;
+#endif
+
+#ifndef JSAddLock
+#define JSAddLock(lock) os_unfair_lock_lock(&lock);
+#endif
+
+#ifndef JSUnLock
+#define JSUnLock(lock) os_unfair_lock_unlock(&lock);
+#endif
 
 #pragma mark - CGFloat
 
