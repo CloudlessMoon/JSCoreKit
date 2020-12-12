@@ -9,6 +9,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
+    JSCoreAnimationExtrapolateTypeIdentity = 0,
+    JSCoreAnimationExtrapolateTypeClamp,
+    JSCoreAnimationExtrapolateTypeExtend,
+};
+
 @interface JSCoreHelper : NSObject
 
 /**
@@ -47,6 +53,34 @@ NS_ASSUME_NONNULL_BEGIN
 
 // 用于获取 isNotchedScreen 设备的 insets，注意对于 iPad Pro 11-inch 这种无刘海凹槽但却有使用 Home Indicator 的设备，它的 top 返回0，bottom 返回 safeAreaInsets.bottom 的值
 + (UIEdgeInsets)safeAreaInsetsForDeviceWithNotch;
+
+/**
+ 在 iPad 分屏模式下可获得实际运行区域的窗口大小，如需适配 iPad 分屏，建议用这个方法来代替 [UIScreen mainScreen].bounds.size
+ @return 应用运行的窗口大小
+ */
++ (CGSize)applicationSize;
+
+@end
+
+#pragma mark - 动画
+
+@interface JSCoreHelper (Animation)
+
+/// 插值器，线性插值 inputRange:[0, 100]  outputRange:[0.5, 1]，用于手势
++ (CGFloat)interpolateValue:(CGFloat)value
+                 inputRange:(NSArray<NSNumber *> *)inputRange
+                outputRange:(NSArray<NSNumber *> *)outputRange
+            extrapolateLeft:(JSCoreAnimationExtrapolateType)extrapolateLeft
+           extrapolateRight:(JSCoreAnimationExtrapolateType)extrapolateRight;
+
+/// 按照中心缩放之后偏移的XY值
++ (CGPoint)scaleOffsetPointInSize:(CGSize)size
+                           scaleX:(CGFloat)scaleX
+                           scaleY:(CGFloat)scaleY;
+
++ (CGFloat)radiansToDegrees:(CGFloat)radians;
+
++ (CGFloat)degreesToRadians:(CGFloat)degrees;
 
 @end
 

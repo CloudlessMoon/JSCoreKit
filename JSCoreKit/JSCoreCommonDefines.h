@@ -150,6 +150,78 @@ JSCGFlat(CGFloat floatValue) {
     return JSCGFlatSpecificScale(floatValue, 0);
 }
 
+/// 检测某个数值如果为 NaN 则将其转换为 0，避免布局中出现 crash
+CG_INLINE CGFloat
+JSCGFloatSafeValue(CGFloat value) {
+    return isnan(value) ? 0 : value;
+}
+
+#pragma mark - CGRect
+
+CG_INLINE BOOL
+JSCGRectIsNaN(CGRect rect) {
+    return isnan(rect.origin.x) || isnan(rect.origin.y) || isnan(rect.size.width) || isnan(rect.size.height);
+}
+
+CG_INLINE BOOL
+JSCGRectIsInf(CGRect rect) {
+    return isinf(rect.origin.x) || isinf(rect.origin.y) || isinf(rect.size.width) || isinf(rect.size.height);
+}
+
+CG_INLINE BOOL
+JSCGRectIsValidated(CGRect rect) {
+    return !CGRectIsNull(rect) && !CGRectIsInfinite(rect) && !JSCGRectIsNaN(rect) && !JSCGRectIsInf(rect);
+}
+
+CG_INLINE CGRect
+JSCGRectSafeValue(CGRect rect) {
+    return CGRectMake(JSCGFloatSafeValue(CGRectGetMinX(rect)), JSCGFloatSafeValue(CGRectGetMinY(rect)), JSCGFloatSafeValue(CGRectGetWidth(rect)), JSCGFloatSafeValue(CGRectGetHeight(rect)));
+}
+
+CG_INLINE CGRect
+JSCGRectFlatMake(CGFloat x, CGFloat y, CGFloat width, CGFloat height) {
+    return CGRectMake(JSCGFlat(x), JSCGFlat(y), JSCGFlat(width), JSCGFlat(height));
+}
+
+CG_INLINE CGRect
+JSCGRectFlatted(CGRect rect) {
+    return CGRectMake(JSCGFlat(rect.origin.x), JSCGFlat(rect.origin.y), JSCGFlat(rect.size.width), JSCGFlat(rect.size.height));
+}
+
+CG_INLINE CGPoint
+JSCGPointApplyAffineTransformWithCoordinatePoint(CGPoint coordinatePoint, CGPoint targetPoint, CGAffineTransform t) {
+    CGPoint p;
+    p.x = (targetPoint.x - coordinatePoint.x) * t.a + (targetPoint.y - coordinatePoint.y) * t.c + coordinatePoint.x;
+    p.y = (targetPoint.x - coordinatePoint.x) * t.b + (targetPoint.y - coordinatePoint.y) * t.d + coordinatePoint.y;
+    p.x += t.tx;
+    p.y += t.ty;
+    return p;
+}
+
+CG_INLINE CGRect
+JSCGRectApplyAffineTransformWithAnchorPoint(CGRect rect, CGAffineTransform t, CGPoint anchorPoint) {
+    CGFloat width = CGRectGetWidth(rect);
+    CGFloat height = CGRectGetHeight(rect);
+    CGPoint oPoint = CGPointMake(rect.origin.x + width * anchorPoint.x, rect.origin.y + height * anchorPoint.y);
+    CGPoint top_left = JSCGPointApplyAffineTransformWithCoordinatePoint(oPoint, CGPointMake(rect.origin.x, rect.origin.y), t);
+    CGPoint bottom_left = JSCGPointApplyAffineTransformWithCoordinatePoint(oPoint, CGPointMake(rect.origin.x, rect.origin.y + height), t);
+    CGPoint top_right = JSCGPointApplyAffineTransformWithCoordinatePoint(oPoint, CGPointMake(rect.origin.x + width, rect.origin.y), t);
+    CGPoint bottom_right = JSCGPointApplyAffineTransformWithCoordinatePoint(oPoint, CGPointMake(rect.origin.x + width, rect.origin.y + height), t);
+    CGFloat minX = MIN(MIN(MIN(top_left.x, bottom_left.x), top_right.x), bottom_right.x);
+    CGFloat maxX = MAX(MAX(MAX(top_left.x, bottom_left.x), top_right.x), bottom_right.x);
+    CGFloat minY = MIN(MIN(MIN(top_left.y, bottom_left.y), top_right.y), bottom_right.y);
+    CGFloat maxY = MAX(MAX(MAX(top_left.y, bottom_left.y), top_right.y), bottom_right.y);
+    CGFloat newWidth = maxX - minX;
+    CGFloat newHeight = maxY - minY;
+    CGRect result = CGRectMake(minX, minY, newWidth, newHeight);
+    return result;
+}
+
+CG_INLINE CGRect
+CGRectApplyScale(CGRect rect, CGFloat scale) {
+    return JSCGRectFlatted(CGRectMake(CGRectGetMinX(rect) * scale, CGRectGetMinY(rect) * scale, CGRectGetWidth(rect) * scale, CGRectGetHeight(rect) * scale));
+}
+
 #pragma mark - Runtime
 
 CG_INLINE BOOL

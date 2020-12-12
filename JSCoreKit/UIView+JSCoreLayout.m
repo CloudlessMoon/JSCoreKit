@@ -71,4 +71,34 @@
     self.frame = rect;
 }
 
+- (CGPoint)js_origin {
+    return self.frame.origin;
+}
+
+- (void)setJs_origin:(CGPoint)js_origin {
+    CGRect rect = self.frame;
+    rect.origin.x = JSCGFlat(js_origin.x);
+    rect.origin.y = JSCGFlat(js_origin.y);
+    self.frame = rect;
+}
+
+- (CGSize)js_size {
+    return self.frame.size;
+}
+
+- (void)setJs_size:(CGSize)js_size {
+    CGRect rect = self.frame;
+    rect.size.width = JSCGFlat(js_size.width);
+    rect.size.height = JSCGFlat(js_size.height);
+    self.frame = rect;
+}
+
+- (CGRect)js_frameApplyTransform {
+    return self.frame;
+}
+
+- (void)setJs_frameApplyTransform:(CGRect)js_frameApplyTransform {
+    self.frame = JSCGRectApplyAffineTransformWithAnchorPoint(js_frameApplyTransform, self.transform, self.layer.anchorPoint);
+}
+
 @end

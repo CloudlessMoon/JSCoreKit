@@ -30,6 +30,15 @@ NS_ASSUME_NONNULL_BEGIN
 /// 等价于 CGRectGetHeight(frame)
 @property (nonatomic, assign) CGFloat js_height;
 
+/// 等价于 self.frame.origin
+@property (nonatomic, assign) CGPoint js_origin;
+
+/// 等价于 self.frame.size
+@property (nonatomic, assign) CGSize js_size;
+
+/// 将要设置的 frame 用 CGRectApplyAffineTransformWithAnchorPoint 处理后再设置
+@property (nonatomic, assign) CGRect js_frameApplyTransform;
+
 @end
 
 NS_ASSUME_NONNULL_END
