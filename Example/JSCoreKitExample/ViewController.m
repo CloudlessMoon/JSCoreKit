@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-#import <JSCoreHelper.h>
+#import <JSCoreKit.h>
 
 @interface ViewController ()
 

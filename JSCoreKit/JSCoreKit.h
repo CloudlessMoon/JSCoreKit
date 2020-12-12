@@ -27,4 +27,6 @@
 #import "NSObject+JSCore.h"
 #import "UIView+JSCoreLayout.h"
 
+#endif /* __has_include */
+
 #endif /* JSCoreKit_h */
