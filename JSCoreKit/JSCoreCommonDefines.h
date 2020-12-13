@@ -156,6 +156,49 @@ JSCGFloatSafeValue(CGFloat value) {
     return isnan(value) ? 0 : value;
 }
 
+CG_INLINE CGFloat
+JSCGFloatToFixed(CGFloat value, NSUInteger precision) {
+    NSString *formatString = [NSString stringWithFormat:@"%%.%@f", @(precision)];
+    NSString *toString = [NSString stringWithFormat:formatString, value];
+#if CGFLOAT_IS_DOUBLE
+    CGFloat result = [toString doubleValue];
+#else
+    CGFloat result = [toString floatValue];
+#endif
+    return result;
+}
+
+#pragma mark - CGPoint
+
+/// 两个point相加
+CG_INLINE CGPoint
+JSCGPointUnion(CGPoint point1, CGPoint point2) {
+    return CGPointMake(JSCGFlat(point1.x + point2.x), JSCGFlat(point1.y + point2.y));
+}
+
+/// 获取rect的center，包括rect本身的x/y偏移
+CG_INLINE CGPoint
+JSCGPointGetCenterWithRect(CGRect rect) {
+    return CGPointMake(JSCGFlat(CGRectGetMidX(rect)), JSCGFlat(CGRectGetMidY(rect)));
+}
+
+CG_INLINE CGPoint
+JSCGPointGetCenterWithSize(CGSize size) {
+    return CGPointMake(JSCGFlat(size.width / 2.0), JSCGFlat(size.height / 2.0));
+}
+
+CG_INLINE CGPoint
+JSCGPointToFixed(CGPoint point, NSUInteger precision) {
+    CGPoint result = CGPointMake(JSCGFloatToFixed(point.x, precision), JSCGFloatToFixed(point.y, precision));
+    return result;
+}
+
+CG_INLINE CGPoint
+JSCGPointRemoveFloatMin(CGPoint point) {
+    CGPoint result = CGPointMake(JSCGRemoveFloatMin(point.x), JSCGRemoveFloatMin(point.y));
+    return result;
+}
+
 #pragma mark - CGRect
 
 CG_INLINE BOOL
@@ -187,6 +230,13 @@ CG_INLINE CGRect
 JSCGRectFlatted(CGRect rect) {
     return CGRectMake(JSCGFlat(rect.origin.x), JSCGFlat(rect.origin.y), JSCGFlat(rect.size.width), JSCGFlat(rect.size.height));
 }
+
+CG_INLINE CGRect
+JSCGRectMakeWithSize(CGSize size) {
+    return CGRectMake(0, 0, size.width, size.height);
+}
+
+#pragma mark - Transform
 
 CG_INLINE CGPoint
 JSCGPointApplyAffineTransformWithCoordinatePoint(CGPoint coordinatePoint, CGPoint targetPoint, CGAffineTransform t) {
