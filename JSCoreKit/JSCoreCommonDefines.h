@@ -268,7 +268,7 @@ JSCGRectApplyAffineTransformWithAnchorPoint(CGRect rect, CGAffineTransform t, CG
 }
 
 CG_INLINE CGRect
-CGRectApplyScale(CGRect rect, CGFloat scale) {
+JSCGRectApplyScale(CGRect rect, CGFloat scale) {
     return JSCGRectFlatted(CGRectMake(CGRectGetMinX(rect) * scale, CGRectGetMinY(rect) * scale, CGRectGetWidth(rect) * scale, CGRectGetHeight(rect) * scale));
 }
 
