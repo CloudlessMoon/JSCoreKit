@@ -168,6 +168,9 @@ static NSInteger is58InchScreen = -1;
 
 + (UIEdgeInsets)safeAreaInsetsForDeviceWithNotch {
     NSAssert(NSThread.isMainThread, @"请在主线程调用！");
+    if (!self.isNotchedScreen) {
+        return UIEdgeInsetsZero;
+    }
     UIEdgeInsets insets = UIEdgeInsetsZero;
     UIWindow *window = UIApplication.sharedApplication.js_keyWindow;
     if (window) {
