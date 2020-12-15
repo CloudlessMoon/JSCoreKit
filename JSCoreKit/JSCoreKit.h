@@ -18,6 +18,7 @@
 #import <JSCoreKit/NSObject+JSCore.h>
 #import <JSCoreKit/UIView+JSCoreLayout.h>
 #import <JSCoreKit/CALayer+JSCore.h>
+#import <JSCoreKit/UIApplication+JSCore.h>
 
 #else
 
@@ -28,6 +29,7 @@
 #import "NSObject+JSCore.h"
 #import "UIView+JSCoreLayout.h"
 #import "CALayer+JSCore.h"
+#import "UIApplication+JSCore.h"
 
 #endif /* __has_include */
 

@@ -54,6 +54,11 @@ typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
 // 用于获取 isNotchedScreen 设备的 insets，注意对于 iPad Pro 11-inch 这种无刘海凹槽但却有使用 Home Indicator 的设备，它的 top 返回0，bottom 返回 safeAreaInsets.bottom 的值
 + (UIEdgeInsets)safeAreaInsetsForDeviceWithNotch;
 
+// 状态栏动态高度
++ (CGFloat)statusBarHeight;
+// 状态栏静态高度
++ (CGFloat)statusBarHeightConstant;
+
 /**
  在 iPad 分屏模式下可获得实际运行区域的窗口大小，如需适配 iPad 分屏，建议用这个方法来代替 [UIScreen mainScreen].bounds.size
  @return 应用运行的窗口大小

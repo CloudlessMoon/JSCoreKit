@@ -8,6 +8,7 @@
 #import "JSCoreHelper.h"
 #import "NSObject+JSCore.h"
 #import "JSCoreCommonDefines.h"
+#import "UIApplication+JSCore.h"
 
 @implementation JSCoreHelper
 
@@ -166,30 +167,33 @@ static NSInteger is58InchScreen = -1;
 }
 
 + (UIEdgeInsets)safeAreaInsetsForDeviceWithNotch {
-    if (![self isNotchedScreen]) {
-        return UIEdgeInsetsZero;
+    NSAssert(NSThread.isMainThread, @"请在主线程调用！");
+    UIEdgeInsets insets = UIEdgeInsetsZero;
+    UIWindow *window = UIApplication.sharedApplication.js_keyWindow;
+    if (window) {
+        if (@available(iOS 11.0, *)) {
+            insets = window.safeAreaInsets;
+        }
     }
-    
-    if ([self isIPad]) {
-        return UIEdgeInsetsMake(0, 0, 20, 0);
-    }
-    
-    UIInterfaceOrientation orientation = UIApplication.sharedApplication.statusBarOrientation;
-    
-    switch (orientation) {
-        case UIInterfaceOrientationPortrait:
-            return UIEdgeInsetsMake(44, 0, 34, 0);
-            
-        case UIInterfaceOrientationPortraitUpsideDown:
-            return UIEdgeInsetsMake(34, 0, 44, 0);
-            
-        case UIInterfaceOrientationLandscapeLeft:
-        case UIInterfaceOrientationLandscapeRight:
-            return UIEdgeInsetsMake(0, 44, 21, 44);
-            
-        case UIInterfaceOrientationUnknown:
-        default:
-            return UIEdgeInsetsMake(44, 0, 34, 0);
+    return insets;
+}
+
++ (CGFloat)statusBarHeight {
+    NSAssert(NSThread.isMainThread, @"请在主线程调用！");
+    JSBeginIgnoreDeprecatedWarning
+    return CGRectGetMaxY(UIApplication.sharedApplication.statusBarFrame);
+    JSEndIgnoreDeprecatedWarning
+}
+
++ (CGFloat)statusBarHeightConstant {
+    JSBeginIgnoreDeprecatedWarning
+    BOOL isStatusBarHidden = UIApplication.sharedApplication.isStatusBarHidden;
+    JSEndIgnoreDeprecatedWarning
+    if (isStatusBarHidden) {
+        UIEdgeInsets insets = self.safeAreaInsetsForDeviceWithNotch;
+        return insets.top ? : 20;
+    } else {
+        return self.statusBarHeight;
     }
 }
 
