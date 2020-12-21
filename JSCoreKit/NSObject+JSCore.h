@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @code
  *  CGFloat alpha;
- *  [view qmui_performSelector:@selector(alpha) withPrimitiveReturnValue:&alpha];
+ *  [view js_performSelector:@selector(alpha) withPrimitiveReturnValue:&alpha];
  *  @endcode
  */
 - (void)js_performSelector:(SEL)selector withPrimitiveReturnValue:(nullable void *)returnValue;
