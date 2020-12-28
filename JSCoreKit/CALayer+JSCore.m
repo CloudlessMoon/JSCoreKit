@@ -1,12 +1,12 @@
 //
 //  CALayer+JSCore.m
-//  JSMediaBrowserExample
+//  JSCoreKit
 //
 //  Created by jiasong on 2020/12/13.
 //
 
 #import "CALayer+JSCore.h"
-#import "JSCoreCommonDefines.h"
+#import "JSCoreMacroVariable.h"
 
 @implementation CALayer (JSCore)
 

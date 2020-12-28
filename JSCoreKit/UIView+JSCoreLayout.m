@@ -7,7 +7,7 @@
 //
 
 #import "UIView+JSCoreLayout.h"
-#import "JSCoreCommonDefines.h"
+#import "JSCoreMacroMethod.h"
 
 @implementation UIView (JSCoreLayout)
 

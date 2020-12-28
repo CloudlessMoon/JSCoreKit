@@ -11,7 +11,8 @@
 
 #if __has_include(<JSCoreKit/JSCoreKit.h>)
 
-#import <JSCoreKit/JSCoreCommonDefines.h>
+#import <JSCoreKit/JSCoreMacroVariable.h>
+#import <JSCoreKit/JSCoreMacroMethod.h>
 #import <JSCoreKit/JSCoreHelper.h>
 #import <JSCoreKit/JSCoreWeakProxy.h>
 #import <JSCoreKit/NSNumber+JSCore.h>
@@ -22,7 +23,8 @@
 
 #else
 
-#import "JSCoreCommonDefines.h"
+#import "JSCoreMacroVariable.h"
+#import "JSCoreMacroMethod.h"
 #import "JSCoreHelper.h"
 #import "JSCoreWeakProxy.h"
 #import "NSNumber+JSCore.h"

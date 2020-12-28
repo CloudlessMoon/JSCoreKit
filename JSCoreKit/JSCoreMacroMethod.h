@@ -1,134 +1,15 @@
 //
-//  JSCommonDefines.h
+//  JSCoreMacroMethod.h
 //  JSCoreKit
 //
-//  Created by jiasong on 2020/8/24.
-//  Copyright © 2020 jiasong. All rights reserved.
+//  Created by jiasong on 2020/12/28.
 //
 
-#ifndef JSCommonDefines_h
-#define JSCommonDefines_h
+#ifndef JSCoreMacroMethod_h
+#define JSCoreMacroMethod_h
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import <os/lock.h>
+#import "JSCoreMacroVariable.h"
 #import <objc/runtime.h>
-#import "JSCoreWeakProxy.h"
-#import "NSNumber+JSCore.h"
-
-#pragma mark - Clang
-
-#define JSArgumentToString(macro) #macro
-#define JSClangWarningConcat(warning_name) JSArgumentToString(clang diagnostic ignored warning_name)
-#define JSBeginIgnoreClangWarning(warningName) _Pragma("clang diagnostic push") _Pragma(JSClangWarningConcat(#warningName))
-#define JSEndIgnoreClangWarning _Pragma("clang diagnostic pop")
-#define JSBeginIgnorePerformSelectorLeaksWarning JSBeginIgnoreClangWarning(-Warc-performSelector-leaks)
-#define JSEndIgnorePerformSelectorLeaksWarning JSEndIgnoreClangWarning
-#define JSBeginIgnoreDeprecatedWarning JSBeginIgnoreClangWarning(-Wdeprecated-declarations)
-#define JSEndIgnoreDeprecatedWarning JSEndIgnoreClangWarning
-
-#pragma mark - Synthesize
-
-#define _JSSynthesizeId(_getterName, _setterName, _policy) \
-_Pragma("clang diagnostic push") _Pragma(JSClangWarningConcat("-Wmismatched-parameter-types")) _Pragma(JSClangWarningConcat("-Wmismatched-return-types"))\
-static char kAssociatedObjectKey_##_getterName;\
-- (void)_setterName:(id)_getterName {\
-objc_setAssociatedObject(self, &kAssociatedObjectKey_##_getterName, _getterName, OBJC_ASSOCIATION_##_policy##_NONATOMIC);\
-}\
-\
-- (id)_getterName {\
-return objc_getAssociatedObject(self, &kAssociatedObjectKey_##_getterName);\
-}\
-_Pragma("clang diagnostic pop")
-
-#define _JSSynthesizeWeakId(_getterName, _setterName) \
-_Pragma("clang diagnostic push") _Pragma(JSClangWarningConcat("-Wmismatched-parameter-types")) _Pragma(JSClangWarningConcat("-Wmismatched-return-types"))\
-static char kAssociatedObjectKey_##_getterName;\
-- (void)_setterName:(id)_getterName {\
-objc_setAssociatedObject(self, &kAssociatedObjectKey_##_getterName, [[JSCoreWeakProxy alloc] initWithTarget:_getterName], OBJC_ASSOCIATION_RETAIN_NONATOMIC);\
-}\
-\
-- (id)_getterName {\
-return ((JSCoreWeakProxy *)objc_getAssociatedObject(self, &kAssociatedObjectKey_##_getterName)).target;\
-}\
-_Pragma("clang diagnostic pop")
-
-#define _JSSynthesizeNonObject(_getterName, _setterName, _type, valueInitializer, valueGetter) \
-_Pragma("clang diagnostic push") _Pragma(JSClangWarningConcat("-Wmismatched-parameter-types")) _Pragma(JSClangWarningConcat("-Wmismatched-return-types"))\
-static char kAssociatedObjectKey_##_getterName;\
-- (void)_setterName:(_type)_getterName {\
-objc_setAssociatedObject(self, &kAssociatedObjectKey_##_getterName, [NSNumber valueInitializer:_getterName], OBJC_ASSOCIATION_RETAIN_NONATOMIC);\
-}\
-\
-- (_type)_getterName {\
-return [((NSNumber *)objc_getAssociatedObject(self, &kAssociatedObjectKey_##_getterName)) valueGetter];\
-}\
-_Pragma("clang diagnostic pop")
-
-/// @property (nonatomic, strong) id xxx
-#define JSSynthesizeIdStrongProperty(_getterName, _setterName) _JSSynthesizeId(_getterName, _setterName, RETAIN)
-
-/// @property (nonatomic, weak) id xxx
-#define JSSynthesizeIdWeakProperty(_getterName, _setterName) _JSSynthesizeWeakId(_getterName, _setterName)
-
-/// @property (nonatomic, copy) id xxx
-#define JSSynthesizeIdCopyProperty(_getterName, _setterName) _JSSynthesizeId(_getterName, _setterName, COPY)
-
-#pragma mark - NonObject Marcos
-
-/// @property (nonatomic, assign) Int xxx
-#define JSSynthesizeIntProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, int, numberWithInt, intValue)
-
-/// @property (nonatomic, assign) unsigned int xxx
-#define JSSynthesizeUnsignedIntProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, unsigned int, numberWithUnsignedInt, unsignedIntValue)
-
-/// @property (nonatomic, assign) float xxx
-#define JSSynthesizeFloatProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, float, numberWithFloat, floatValue)
-
-/// @property (nonatomic, assign) double xxx
-#define JSSynthesizeDoubleProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, double, numberWithDouble, doubleValue)
-
-/// @property (nonatomic, assign) BOOL xxx
-#define JSSynthesizeBOOLProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, BOOL, numberWithBool, boolValue)
-
-/// @property (nonatomic, assign) NSInteger xxx
-#define JSSynthesizeNSIntegerProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, NSInteger, numberWithInteger, integerValue)
-
-/// @property (nonatomic, assign) NSUInteger xxx
-#define JSSynthesizeNSUIntegerProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, NSUInteger, numberWithUnsignedInteger, unsignedIntegerValue)
-
-/// @property (nonatomic, assign) CGFloat xxx
-#define JSSynthesizeCGFloatProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, CGFloat, numberWithDouble, js_CGFloatValue)
-
-/// @property (nonatomic, assign) CGPoint xxx
-#define JSSynthesizeCGPointProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, CGPoint, valueWithCGPoint, CGPointValue)
-
-/// @property (nonatomic, assign) CGSize xxx
-#define JSSynthesizeCGSizeProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, CGSize, valueWithCGSize, CGSizeValue)
-
-/// @property (nonatomic, assign) CGRect xxx
-#define JSSynthesizeCGRectProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, CGRect, valueWithCGRect, CGRectValue)
-
-/// @property (nonatomic, assign) UIEdgeInsets xxx
-#define JSSynthesizeUIEdgeInsetsProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, UIEdgeInsets, valueWithUIEdgeInsets, UIEdgeInsetsValue)
-
-#pragma mark - Lock
-
-#ifndef JSLockDeclare
-#define JSLockDeclare(lock) os_unfair_lock lock;
-#endif
-
-#ifndef JSLockInit
-#define JSLockInit(lock) lock = OS_UNFAIR_LOCK_INIT;
-#endif
-
-#ifndef JSLockAdd
-#define JSLockAdd(lock) os_unfair_lock_lock(&lock);
-#endif
-
-#ifndef JSLockRemove
-#define JSLockRemove(lock) os_unfair_lock_unlock(&lock);
-#endif
 
 #pragma mark - CGFloat
 
@@ -328,4 +209,40 @@ JSRuntimeOverrideImplementation(Class targetClass, SEL targetSelector, id (^impl
     return YES;
 }
 
-#endif /* JSCommonDefines_h */
+#pragma mark - 线程相关
+
+DISPATCH_INLINE void
+JSAsyncExecuteOnQueue(dispatch_queue_t queue, dispatch_block_t block) {
+    dispatch_async(queue, block);
+}
+
+DISPATCH_INLINE void   /// 全局并行队列
+JSAsyncExecuteOnGlobalQueue(dispatch_block_t block){
+    JSAsyncExecuteOnQueue(dispatch_get_global_queue(0, 0), block);
+}
+
+DISPATCH_INLINE void
+JSAsyncExecuteOnMainQueue(dispatch_block_t block) {
+    if (dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL) == dispatch_queue_get_label(dispatch_get_main_queue())) {
+        block();
+    } else {
+        JSAsyncExecuteOnQueue(dispatch_get_main_queue(), block);
+    }
+}
+
+DISPATCH_INLINE void
+JSAfterOnMainQueue(CGFloat delayInSeconds, dispatch_block_t block) {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), block);
+}
+
+DISPATCH_INLINE dispatch_queue_t
+JSCreateSerialQueue(NSString *label) {
+    return dispatch_queue_create(label.UTF8String, DISPATCH_QUEUE_SERIAL);
+}
+
+DISPATCH_INLINE dispatch_queue_t
+JSCreateConcurrentQueue(NSString *label) {
+    return dispatch_queue_create(label.UTF8String, DISPATCH_QUEUE_CONCURRENT);
+}
+
+#endif /* JSCoreMacroMethod_h */

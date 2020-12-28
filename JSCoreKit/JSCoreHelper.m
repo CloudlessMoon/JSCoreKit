@@ -7,7 +7,7 @@
 
 #import "JSCoreHelper.h"
 #import "NSObject+JSCore.h"
-#import "JSCoreCommonDefines.h"
+#import "JSCoreMacroVariable.h"
 #import "UIApplication+JSCore.h"
 
 @implementation JSCoreHelper

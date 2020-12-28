@@ -1,6 +1,6 @@
 //
 //  CALayer+JSCore.h
-//  JSMediaBrowserExample
+//  JSCoreKit
 //
 //  Created by jiasong on 2020/12/13.
 //
