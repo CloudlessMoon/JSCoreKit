@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.swift_versions = ["4.2", "5.0"]
   s.source       = { :git => "https://github.com/jiasongs/JSCoreKit.git", :tag => "#{s.version}" }
   s.frameworks   = "Foundation", "UIKit", "CoreGraphics", "QuartzCore"
-  s.source_files = "JSCoreKit", "JSCoreKit/*.{h,m}"
+  s.source_files = "Sources", "Sources/*.{h,m}"
   s.license      = "MIT"
   s.requires_arc = true
 end
