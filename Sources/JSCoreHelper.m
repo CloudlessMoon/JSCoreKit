@@ -51,8 +51,9 @@ static CGFloat pixelOne = -1.0f;
 static NSInteger isIPad = -1;
 + (BOOL)isIPad {
     if (isIPad < 0) {
-        // [[[UIDevice currentDevice] model] isEqualToString:@"iPad"] 无法判断模拟器 iPad，所以改为以下方式
+        JSBeginIgnoreDeprecatedWarning
         isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 1 : 0;
+        JSEndIgnoreClangWarning
     }
     return isIPad > 0;
 }
@@ -168,9 +169,6 @@ static NSInteger is58InchScreen = -1;
 
 + (UIEdgeInsets)safeAreaInsetsForDeviceWithNotch {
     NSAssert(NSThread.isMainThread, @"请在主线程调用！");
-    if (!self.isNotchedScreen) {
-        return UIEdgeInsetsZero;
-    }
     UIEdgeInsets insets = UIEdgeInsetsZero;
     UIWindow *window = UIApplication.sharedApplication.js_keyWindow;
     if (window) {

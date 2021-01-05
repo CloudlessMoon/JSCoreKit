@@ -6,6 +6,7 @@
 //
 
 #import "UIApplication+JSCore.h"
+#import "JSCoreMacroVariable.h"
 
 @implementation UIApplication (JSCore)
 
@@ -30,11 +31,13 @@
         if (window.isKeyWindow) {
             originalKeyWindow = window;
         } else {
+            JSBeginIgnoreDeprecatedWarning
             if (CGRectEqualToRect(self.keyWindow.bounds, UIScreen.mainScreen.bounds)) {
                 originalKeyWindow = self.keyWindow;
             } else {
                 originalKeyWindow = window;
             }
+            JSEndIgnoreClangWarning
         }
     }
     return originalKeyWindow;
