@@ -215,18 +215,26 @@ static NSInteger is58InchScreen = -1;
     JSEndIgnoreDeprecatedWarning
     if (isStatusBarHidden) {
         UIEdgeInsets insets = self.safeAreaInsetsForDeviceWithNotch;
-        return insets.top ? : 20;
+        if (insets.top == 0) {
+            if (self.isIPad && self.isNotchedScreen) {
+                insets.top = 24;
+            } else {
+                insets.top = 20;
+            }
+        }
+        return insets.top;
     } else {
         return self.statusBarHeight;
     }
 }
 
 + (CGSize)applicationSize {
-    /// applicationFrame 在 iPad 下返回的 size 要比 window 实际的 size 小，这个差值体现在 origin 上，所以用 origin + size 修正得到正确的大小。
     JSBeginIgnoreDeprecatedWarning
     CGRect applicationFrame = [UIScreen mainScreen].applicationFrame;
     JSEndIgnoreDeprecatedWarning
-    return CGSizeMake(applicationFrame.size.width + applicationFrame.origin.x, applicationFrame.size.height + applicationFrame.origin.y);
+    /// applicationFrame 在 iPad 下返回的 size 要比 window 实际的 size 小，这个差值体现在 origin 上，所以用 origin + size 修正得到正确的大小。
+    return CGSizeMake(applicationFrame.size.width + applicationFrame.origin.x,
+                      applicationFrame.size.height + applicationFrame.origin.y);
 }
 
 + (BOOL)isZoomedMode {
