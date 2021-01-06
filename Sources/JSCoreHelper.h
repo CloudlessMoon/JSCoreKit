@@ -35,6 +35,7 @@ typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
 
 @interface JSCoreHelper (Device)
 
++ (BOOL)isMac;
 + (BOOL)isIPad;
 + (BOOL)isIPod;
 + (BOOL)isIPhone;

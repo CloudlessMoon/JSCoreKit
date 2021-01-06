@@ -9,6 +9,7 @@
 #import "NSObject+JSCore.h"
 #import "JSCoreMacroVariable.h"
 #import "UIApplication+JSCore.h"
+#import <sys/utsname.h>
 
 @implementation JSCoreHelper
 
@@ -47,6 +48,16 @@ static CGFloat pixelOne = -1.0f;
 @end
 
 @implementation JSCoreHelper (Device)
+
++ (BOOL)isMac {
+    if (@available(iOS 14.0, *)) {
+        return [NSProcessInfo processInfo].isiOSAppOnMac || [NSProcessInfo processInfo].isMacCatalystApp;
+    }
+    if (@available(iOS 13.0, *)) {
+        return [NSProcessInfo processInfo].isMacCatalystApp;
+    }
+    return NO;
+}
 
 static NSInteger isIPad = -1;
 + (BOOL)isIPad {
@@ -96,7 +107,7 @@ static NSInteger isNotchedScreen = -1;
                 /*
                  检测方式解释/测试要点：
                  1. iOS 11 与 iOS 12 可能行为不同，所以要分别测试。
-                 2. 与触发 [JSCoreHelper isNotchedScreen] 方法时的进程有关，例如 https://github.com/Tencent/QMUI_iOS/issues/482#issuecomment-456051738 里提到的 [NSObject performSelectorOnMainThread:withObject:waitUntilDone:NO] 就会导致较多的异常。
+                 2. 与触发 isNotchedScreen 方法时的进程有关，例如 https://github.com/Tencent/QMUI_iOS/issues/482#issuecomment-456051738 里提到的 [NSObject performSelectorOnMainThread:withObject:waitUntilDone:NO] 就会导致较多的异常。
                  3. iOS 12 下，在非第2点里提到的情况下，iPhone、iPad 均可通过 UIScreen -_peripheryInsets 方法的返回值区分，但如果满足了第2点，则 iPad 无法使用这个方法，这种情况下要依赖第4点。
                  4. iOS 12 下，不管是否满足第2点，不管是什么设备类型，均可以通过一个满屏的 UIWindow 的 rootViewController.view.frame.origin.y 的值来区分，如果是非全面屏，这个值必定为20，如果是全面屏，则可能是24或44等不同的值。但由于创建 UIWindow、UIViewController 等均属于较大消耗，所以只在前面的步骤无法区分的情况下才会使用第4点。
                  5. 对于第4点，经测试与当前设备的方向、是否有勾选 project 里的 General - Hide status bar、当前是否处于来电模式的状态栏这些都没关系。
@@ -139,8 +150,16 @@ static NSInteger is58InchScreen = -1;
     return is58InchScreen > 0;
 }
 
++ (CGSize)screenSizeFor67Inch {
+    return CGSizeMake(428, 926);
+}
+
 + (CGSize)screenSizeFor65Inch {
     return CGSizeMake(414, 896);
+}
+
++ (CGSize)screenSizeFor61InchAndiPhone12 {
+    return CGSizeMake(390, 844);
 }
 
 + (CGSize)screenSizeFor61Inch {
@@ -153,6 +172,10 @@ static NSInteger is58InchScreen = -1;
 
 + (CGSize)screenSizeFor55Inch {
     return CGSizeMake(414, 736);
+}
+
++ (CGSize)screenSizeFor54Inch {
+    return CGSizeMake(375, 812);
 }
 
 + (CGSize)screenSizeFor47Inch {
@@ -204,6 +227,24 @@ static NSInteger is58InchScreen = -1;
     CGRect applicationFrame = [UIScreen mainScreen].applicationFrame;
     JSEndIgnoreDeprecatedWarning
     return CGSizeMake(applicationFrame.size.width + applicationFrame.origin.x, applicationFrame.size.height + applicationFrame.origin.y);
+}
+
++ (BOOL)isZoomedMode {
+    if (![self isIPhone]) {
+        return NO;
+    }
+    
+    CGFloat nativeScale = UIScreen.mainScreen.nativeScale;
+    CGFloat scale = UIScreen.mainScreen.scale;
+    
+    // 对于所有的 Plus 系列 iPhone，屏幕物理像素低于软件层面的渲染像素，不管标准模式还是放大模式，nativeScale 均小于 scale，所以需要特殊处理才能准确区分放大模式
+    // https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+    BOOL shouldBeDownsampledDevice = CGSizeEqualToSize(UIScreen.mainScreen.nativeBounds.size, CGSizeMake(1080, 1920));
+    if (shouldBeDownsampledDevice) {
+        scale /= 1.15;
+    }
+    
+    return nativeScale > scale;
 }
 
 @end
