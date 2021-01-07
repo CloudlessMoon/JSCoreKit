@@ -479,11 +479,7 @@ static NSInteger is35InchScreen = -1;
     if (isStatusBarHidden) {
         UIEdgeInsets insets = self.safeAreaInsetsForDeviceWithNotch;
         if (insets.top == 0) {
-            if (self.isIPad && self.isNotchedScreen) {
-                insets.top = 24;
-            } else {
-                insets.top = 20;
-            }
+            insets.top = self.isIPad && self.isNotchedScreen ? 24 : 20;
         }
         return insets.top;
     } else {
