@@ -12,4 +12,9 @@ Pod::Spec.new do |s|
   s.source_files = "Sources", "Sources/*.{h,m}"
   s.license      = "MIT"
   s.requires_arc = true
+
+  s.default_subspec = "Core"
+  s.subspec "Core" do |ss|
+    ss.source_files = "Sources/**/*.{h,m}", "Sources/**/**/*.{h,m}"
+  end
 end
