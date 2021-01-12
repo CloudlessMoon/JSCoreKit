@@ -11,6 +11,24 @@
 #import "JSCoreMacroVariable.h"
 #import <objc/runtime.h>
 
+#pragma mark - Double
+
+FOUNDATION_STATIC_INLINE double
+JSDoubleToFixed(double value, NSUInteger precision) {
+    NSString *formatString = [NSString stringWithFormat:@"%%.%@lf", @(precision)];
+    NSString *toString = [NSString stringWithFormat:formatString, value];
+    return [toString doubleValue];
+}
+
+#pragma mark - Float
+
+FOUNDATION_STATIC_INLINE float
+JSFloatToFixed(float value, NSUInteger precision) {
+    NSString *formatString = [NSString stringWithFormat:@"%%.%@f", @(precision)];
+    NSString *toString = [NSString stringWithFormat:formatString, value];
+    return [toString floatValue];
+}
+
 #pragma mark - CGFloat
 
 CG_INLINE CGFloat
