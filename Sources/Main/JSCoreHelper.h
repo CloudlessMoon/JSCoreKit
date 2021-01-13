@@ -49,6 +49,9 @@ typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
 @property (class, nonatomic, readonly) BOOL isIPhone;
 @property (class, nonatomic, readonly) BOOL isSimulator;
 
+/// 操作系统版本号，只获取第二级的版本号，例如 10.3.1 只会得到 10.3
+@property (class, nonatomic, readonly) double versionForiOS;
+
 /// 带物理凹槽的刘海屏或者使用 Home Indicator 类型的设备
 @property (class, nonatomic, readonly) BOOL isNotchedScreen;
 
@@ -101,10 +104,29 @@ typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
 /// @NEW_DEVICE_CHECKER
 @property (class, nonatomic, readonly) BOOL isZoomedMode;
 
+/// 是否横竖屏
+/// 用户界面横屏了才会返回YES
+@property (class, nonatomic, readonly) BOOL isLandscape;
+/// 无论支不支持横屏，只要设备横屏了，就会返回YES
+@property (class, nonatomic, readonly) BOOL isLandscapeDevice;
+
 /// 状态栏动态高度
 @property (class, nonatomic, readonly) CGFloat statusBarHeight;
 /// 状态栏静态高度
 @property (class, nonatomic, readonly) CGFloat statusBarHeightConstant;
+
+/// 导航栏高度
+@property (class, nonatomic, readonly) CGFloat navigationBarHeight;
+/// 状态栏动态高度 + 导航栏高度
+@property (class, nonatomic, readonly) CGFloat navigationContentTop;
+/// 状态栏静态高度 + 导航栏高度
+@property (class, nonatomic, readonly) CGFloat navigationContentTopConstant;
+
+/// toolBar相关frame
+@property (class, nonatomic, readonly) CGFloat toolBarHeight;
+
+/// tabBar相关frame
+@property (class, nonatomic, readonly) CGFloat tabBarHeight;
 
 /// 屏幕尺寸，会根据横竖屏的变化而变化
 @property (class, nonatomic, readonly) CGSize screenSize;
@@ -114,6 +136,9 @@ typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
 
 /// 在 iPad 分屏模式下可获得实际运行区域的窗口大小，如需适配 iPad 分屏，建议用这个方法来代替 [UIScreen mainScreen].bounds.size
 @property (class, nonatomic, readonly) CGSize applicationSize;
+
+/// 判断当前是否是处于分屏模式的 iPad
+@property (class, nonatomic, readonly) BOOL isSplitScreenForiPad;
 
 @end
 

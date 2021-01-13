@@ -286,6 +286,10 @@ static NSInteger isSimulator = -1;
     return isSimulator > 0;
 }
 
++ (double)versionForiOS {
+    return [[[UIDevice currentDevice] systemVersion] doubleValue];
+}
+
 static NSInteger isNotchedScreen = -1;
 + (BOOL)isNotchedScreen {
     if (@available(iOS 11, *)) {
@@ -465,6 +469,14 @@ static NSInteger is35InchScreen = -1;
     return insets;
 }
 
++ (BOOL)isLandscape {
+    return UIInterfaceOrientationIsLandscape(UIApplication.sharedApplication.statusBarOrientation);
+}
+
++ (BOOL)isLandscapeDevice {
+    return UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation]);
+}
+
 + (CGFloat)statusBarHeight {
     NSAssert(NSThread.isMainThread, @"请在主线程调用！");
     JSBeginIgnoreDeprecatedWarning
@@ -485,6 +497,30 @@ static NSInteger is35InchScreen = -1;
     } else {
         return self.statusBarHeight;
     }
+}
+
++ (CGFloat)navigationBarHeight {
+    return (self.isIPad ? (self.versionForiOS >= 12.0 ? 50 : 44) : (self.isLandscape ? (self.isRegularScreen ? 44 : 32) : 44));
+}
+
++ (CGFloat)navigationContentTop {
+    return self.navigationBarHeight + self.statusBarHeight;
+}
+
++ (CGFloat)navigationContentTopConstant {
+    return self.navigationBarHeight + self.statusBarHeightConstant;
+}
+
++ (CGFloat)toolBarHeight {
+    return (self.isIPad ? ([self isNotchedScreen] ? 70 : (self.versionForiOS >= 12.0 ? 50 : 44)) : (self.isLandscape ? (self.isRegularScreen ? 44 : 32) : 44) + self.safeAreaInsetsForDeviceWithNotch.bottom);
+}
+
++ (CGFloat)tabBarHeight {
+    return (self.isIPad ? ([self isNotchedScreen] ? 65 : (self.versionForiOS >= 12.0 ? 50 : 49)) : (self.isLandscape ? (self.isRegularScreen ? 49 : 32) : 49) + self.safeAreaInsetsForDeviceWithNotch.bottom);
+}
+
++ (BOOL)isSplitScreenForiPad {
+    return (self.isIPad && self.applicationSize.width != self.screenSize.width);
 }
 
 + (BOOL)isZoomedMode {
