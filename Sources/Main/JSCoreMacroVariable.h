@@ -14,6 +14,7 @@
 #import <os/lock.h>
 #import "JSCoreWeakProxy.h"
 #import "NSNumber+JSCore.h"
+#import <objc/runtime.h>
 
 #pragma mark - Clang
 
