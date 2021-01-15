@@ -462,7 +462,7 @@ static NSInteger is35InchScreen = -1;
     UIEdgeInsets insets = UIEdgeInsetsZero;
     UIWindow *window = UIApplication.sharedApplication.js_keyWindow;
     if (window) {
-        if (@available(iOS 11.0, *)) {
+        if (@available(iOS 11, *)) {
             insets = window.safeAreaInsets;
         }
     }
@@ -480,28 +480,15 @@ static NSInteger is35InchScreen = -1;
 + (CGFloat)statusBarHeight {
     NSAssert(NSThread.isMainThread, @"请在主线程调用！");
     JSBeginIgnoreDeprecatedWarning
-    /// 如果是全面屏且状态栏隐藏的情况下, 需要调用statusBarHeightConstant, 以保证外部布局时Top是正确的
+    /// 如果是全面屏且状态栏隐藏的情况下, 需要使用safeAreaInsets, 以保证外部布局时, UI不会被遮挡
     BOOL isStatusBarHidden = UIApplication.sharedApplication.isStatusBarHidden;
     if (self.isNotchedScreen && isStatusBarHidden) {
-        return self.statusBarHeightConstant;
-    }
-    return CGRectGetMaxY(UIApplication.sharedApplication.statusBarFrame);
-    JSEndIgnoreDeprecatedWarning
-}
-
-+ (CGFloat)statusBarHeightConstant {
-    JSBeginIgnoreDeprecatedWarning
-    BOOL isStatusBarHidden = UIApplication.sharedApplication.isStatusBarHidden;
-    JSEndIgnoreDeprecatedWarning
-    if (isStatusBarHidden) {
         UIEdgeInsets insets = self.safeAreaInsetsForDeviceWithNotch;
-        if (insets.top == 0) {
-            insets.top = self.isIPad && self.isNotchedScreen ? 24 : 20;
-        }
         return insets.top;
     } else {
-        return self.statusBarHeight;
+        return CGRectGetMaxY(UIApplication.sharedApplication.statusBarFrame);
     }
+    JSEndIgnoreDeprecatedWarning
 }
 
 + (CGFloat)navigationBarHeight {
@@ -510,10 +497,6 @@ static NSInteger is35InchScreen = -1;
 
 + (CGFloat)navigationContentTop {
     return self.navigationBarHeight + self.statusBarHeight;
-}
-
-+ (CGFloat)navigationContentTopConstant {
-    return self.navigationBarHeight + self.statusBarHeightConstant;
 }
 
 + (CGFloat)toolBarHeight {

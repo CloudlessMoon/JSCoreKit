@@ -112,15 +112,11 @@ typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
 
 /// 状态栏动态高度
 @property (class, nonatomic, readonly) CGFloat statusBarHeight;
-/// 状态栏静态高度
-@property (class, nonatomic, readonly) CGFloat statusBarHeightConstant;
 
 /// 导航栏高度
 @property (class, nonatomic, readonly) CGFloat navigationBarHeight;
 /// 状态栏动态高度 + 导航栏高度
 @property (class, nonatomic, readonly) CGFloat navigationContentTop;
-/// 状态栏静态高度 + 导航栏高度
-@property (class, nonatomic, readonly) CGFloat navigationContentTopConstant;
 
 /// toolBar相关frame
 @property (class, nonatomic, readonly) CGFloat toolBarHeight;

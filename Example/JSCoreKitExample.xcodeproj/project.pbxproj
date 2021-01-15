@@ -352,6 +352,7 @@
 			baseConfigurationReference = 68C0F9DA8FB4B3A3BCA8C9DB /* Pods-JSCoreKitExample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = JSCoreKitExample/JSCoreKitExample.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = KJ6AEY5JEH;
 				INFOPLIST_FILE = JSCoreKitExample/Info.plist;
@@ -362,6 +363,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.jiasong.JSCoreKitExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -371,6 +373,7 @@
 			baseConfigurationReference = 60D56A1EA052E603BF5AD8AF /* Pods-JSCoreKitExample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = JSCoreKitExample/JSCoreKitExample.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = KJ6AEY5JEH;
 				INFOPLIST_FILE = JSCoreKitExample/Info.plist;
@@ -381,6 +384,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.jiasong.JSCoreKitExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
