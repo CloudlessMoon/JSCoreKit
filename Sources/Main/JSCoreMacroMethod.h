@@ -11,25 +11,54 @@
 #import "JSCoreMacroVariable.h"
 #import <objc/runtime.h>
 
+#pragma mark - String
+
+FOUNDATION_STATIC_INLINE NSString *
+JSStringFromDouble(double value, NSUInteger precision) {
+    NSString *formatString = [NSString stringWithFormat:@"%%.%@lf", @(precision)];
+    NSString *toString = [NSString stringWithFormat:formatString, value];
+    return toString;
+}
+
+FOUNDATION_STATIC_INLINE NSString *
+JSStringFromFloat(float value, NSUInteger precision) {
+    NSString *formatString = [NSString stringWithFormat:@"%%.%@f", @(precision)];
+    NSString *toString = [NSString stringWithFormat:formatString, value];
+    return toString;
+}
+
+FOUNDATION_STATIC_INLINE NSString *
+JSStringFromCGFloat(CGFloat value, NSUInteger precision) {
+    NSString *formatString = [NSString stringWithFormat:@"%%.%@f", @(precision)];
+    NSString *toString = [NSString stringWithFormat:formatString, value];
+    return toString;
+}
+
 #pragma mark - Double
 
 FOUNDATION_STATIC_INLINE double
 JSDoubleToFixed(double value, NSUInteger precision) {
-    NSString *formatString = [NSString stringWithFormat:@"%%.%@lf", @(precision)];
-    NSString *toString = [NSString stringWithFormat:formatString, value];
-    return [toString doubleValue];
+    return [JSStringFromDouble(value, precision) doubleValue];
 }
 
 #pragma mark - Float
 
 FOUNDATION_STATIC_INLINE float
 JSFloatToFixed(float value, NSUInteger precision) {
-    NSString *formatString = [NSString stringWithFormat:@"%%.%@f", @(precision)];
-    NSString *toString = [NSString stringWithFormat:formatString, value];
-    return [toString floatValue];
+    return [JSStringFromFloat(value, precision) floatValue];
 }
 
 #pragma mark - CGFloat
+
+CG_INLINE CGFloat
+JSCGFloatToFixed(CGFloat value, NSUInteger precision) {
+#if CGFLOAT_IS_DOUBLE
+    CGFloat result = [JSStringFromCGFloat(value, precision) doubleValue];
+#else
+    CGFloat result = [JSStringFromCGFloat(value, precision) floatValue];
+#endif
+    return result;
+}
 
 CG_INLINE CGFloat
 JSCGRemoveFloatMin(CGFloat floatValue) {
@@ -53,18 +82,6 @@ JSCGFlat(CGFloat floatValue) {
 CG_INLINE CGFloat
 JSCGFloatSafeValue(CGFloat value) {
     return isnan(value) ? 0 : value;
-}
-
-CG_INLINE CGFloat
-JSCGFloatToFixed(CGFloat value, NSUInteger precision) {
-    NSString *formatString = [NSString stringWithFormat:@"%%.%@f", @(precision)];
-    NSString *toString = [NSString stringWithFormat:formatString, value];
-#if CGFLOAT_IS_DOUBLE
-    CGFloat result = [toString doubleValue];
-#else
-    CGFloat result = [toString floatValue];
-#endif
-    return result;
 }
 
 #pragma mark - CGPoint
