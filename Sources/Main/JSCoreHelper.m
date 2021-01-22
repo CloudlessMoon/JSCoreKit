@@ -35,18 +35,6 @@
 
 @end
 
-@implementation JSCoreHelper (UIGraphic)
-
-static CGFloat pixelOne = -1.0f;
-+ (CGFloat)pixelOne {
-    if (pixelOne < 0) {
-        pixelOne = 1 / [[UIScreen mainScreen] scale];
-    }
-    return pixelOne;
-}
-
-@end
-
 @implementation JSCoreHelper (Device)
 
 + (NSString *)deviceModel {
@@ -547,6 +535,14 @@ static NSInteger is35InchScreen = -1;
     /// applicationFrame 在 iPad 下返回的 size 要比 window 实际的 size 小，这个差值体现在 origin 上，所以用 origin + size 修正得到正确的大小。
     return CGSizeMake(applicationFrame.size.width + applicationFrame.origin.x,
                       applicationFrame.size.height + applicationFrame.origin.y);
+}
+
+static CGFloat pixelOne = -1.0f;
++ (CGFloat)pixelOne {
+    if (pixelOne < 0) {
+        pixelOne = 1 / [[UIScreen mainScreen] scale];
+    }
+    return pixelOne;
 }
 
 @end

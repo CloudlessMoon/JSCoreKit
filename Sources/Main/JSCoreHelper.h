@@ -26,13 +26,6 @@ typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
 
 @end
 
-@interface JSCoreHelper (UIGraphic)
-
-/// 获取一像素的大小
-@property (class, nonatomic, readonly) CGFloat pixelOne;
-
-@end
-
 @interface JSCoreHelper (Device)
 
 /// 如 iPhone12,5、iPad6,8
@@ -97,7 +90,6 @@ typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
 @property (class, nonatomic, readonly) CGSize screenSizeFor35Inch;
 
 /// 用于获取 isNotchedScreen 设备的 insets，注意对于 iPad Pro 11-inch 这种无刘海凹槽但却有使用 Home Indicator 的设备，它的 top 返回0，bottom 返回 safeAreaInsets.bottom 的值
-/// @NEW_DEVICE_CHECKER
 @property (class, nonatomic, readonly) UIEdgeInsets safeAreaInsetsForDeviceWithNotch;
 
 /// 系统设置里是否开启了“放大显示-试图-放大”，支持放大模式的 iPhone 设备可在官方文档中查询 https://support.apple.com/zh-cn/guide/iphone/iphd6804774e/ios
@@ -107,6 +99,7 @@ typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
 /// 是否横竖屏
 /// 用户界面横屏了才会返回YES
 @property (class, nonatomic, readonly) BOOL isLandscape;
+
 /// 无论支不支持横屏，只要设备横屏了，就会返回YES
 @property (class, nonatomic, readonly) BOOL isLandscapeDevice;
 
@@ -114,14 +107,19 @@ typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
 @property (class, nonatomic, readonly) CGFloat statusBarHeight;
 
 /// 导航栏高度
+/// @NEW_DEVICE_CHECKER
 @property (class, nonatomic, readonly) CGFloat navigationBarHeight;
+
 /// 状态栏动态高度 + 导航栏高度
+/// @NEW_DEVICE_CHECKER
 @property (class, nonatomic, readonly) CGFloat navigationContentTop;
 
 /// toolBar相关frame
+/// @NEW_DEVICE_CHECKER
 @property (class, nonatomic, readonly) CGFloat toolBarHeight;
 
 /// tabBar相关frame
+/// @NEW_DEVICE_CHECKER
 @property (class, nonatomic, readonly) CGFloat tabBarHeight;
 
 /// 屏幕尺寸，会根据横竖屏的变化而变化
@@ -135,6 +133,9 @@ typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
 
 /// 判断当前是否是处于分屏模式的 iPad
 @property (class, nonatomic, readonly) BOOL isSplitScreenForiPad;
+
+/// 获取一像素的大小
+@property (class, nonatomic, readonly) CGFloat pixelOne;
 
 @end
 
