@@ -470,7 +470,9 @@ static NSInteger is35InchScreen = -1;
 }
 
 + (BOOL)isLandscape {
+    JSBeginIgnoreDeprecatedWarning
     return UIInterfaceOrientationIsLandscape(UIApplication.sharedApplication.statusBarOrientation);
+    JSEndIgnoreDeprecatedWarning
 }
 
 + (BOOL)isLandscapeDevice {
