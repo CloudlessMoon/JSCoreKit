@@ -448,9 +448,9 @@ static NSInteger is35InchScreen = -1;
 + (UIEdgeInsets)safeAreaInsetsForDeviceWithNotch {
     NSAssert(NSThread.isMainThread, @"请在主线程调用！");
     UIEdgeInsets insets = UIEdgeInsetsZero;
-    UIWindow *window = UIApplication.sharedApplication.js_keyWindow;
-    if (window) {
-        if (@available(iOS 11, *)) {
+    if (@available(iOS 11, *)) {
+        UIWindow *window = UIApplication.sharedApplication.js_keyWindow;
+        if (window) {
             insets = window.safeAreaInsets;
         }
     }
