@@ -224,14 +224,17 @@
     return name;
 }
 
+static NSInteger isMac = -1;
 + (BOOL)isMac {
-    if (@available(iOS 14.0, *)) {
-        return [NSProcessInfo processInfo].isiOSAppOnMac || [NSProcessInfo processInfo].isMacCatalystApp;
+    if (isMac < 0) {
+        if (@available(iOS 14.0, *)) {
+            isMac = ([NSProcessInfo processInfo].isiOSAppOnMac || [NSProcessInfo processInfo].isMacCatalystApp) ? 1 : 0;
+        }
+        if (@available(iOS 13.0, *)) {
+            isMac = [NSProcessInfo processInfo].isMacCatalystApp ? 1 : 0;
+        }
     }
-    if (@available(iOS 13.0, *)) {
-        return [NSProcessInfo processInfo].isMacCatalystApp;
-    }
-    return NO;
+    return isMac > 0;
 }
 
 static NSInteger isIPad = -1;
@@ -280,6 +283,10 @@ static NSInteger isSimulator = -1;
 
 static NSInteger isNotchedScreen = -1;
 + (BOOL)isNotchedScreen {
+    if (self.isMac) {
+        /// mac下有状态栏遮挡, 所以也归于全面屏的行列
+        isNotchedScreen = 1;
+    }
     if (@available(iOS 11, *)) {
         if (isNotchedScreen < 0) {
             if (@available(iOS 12.0, *)) {
@@ -472,7 +479,7 @@ static NSInteger is35InchScreen = -1;
     JSBeginIgnoreDeprecatedWarning
     /// 如果是全面屏且状态栏隐藏的情况下, 需要使用safeAreaInsets, 以保证外部布局时, UI不会被遮挡
     BOOL isStatusBarHidden = UIApplication.sharedApplication.isStatusBarHidden;
-    if (self.isNotchedScreen && isStatusBarHidden) {
+    if ((self.isNotchedScreen && isStatusBarHidden) || self.isMac) {
         UIEdgeInsets insets = self.safeAreaInsetsForDeviceWithNotch;
         return insets.top;
     } else {
