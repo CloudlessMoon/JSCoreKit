@@ -22,7 +22,7 @@ typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
  @param block 要执行的一段逻辑
  @param identifier 唯一的标记，建议在 identifier 里添加当前这段业务的特有名称，例如用于 swizzle 的可以加“swizzled”前缀，以避免与其他业务共用同一个 identifier 引发 bug
  */
-+ (BOOL)executeBlock:(void (NS_NOESCAPE ^)(void))block oncePerIdentifier:(NSString *)identifier;
++ (BOOL)executeOnceWithIdentifier:(NSString *)identifier usingBlock:(void (NS_NOESCAPE ^)(void))block;
 
 @end
 

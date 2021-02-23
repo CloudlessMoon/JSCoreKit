@@ -13,7 +13,7 @@
 
 @implementation JSCoreHelper
 
-+ (BOOL)executeBlock:(void (NS_NOESCAPE ^)(void))block oncePerIdentifier:(NSString *)identifier {
++ (BOOL)executeOnceWithIdentifier:(NSString *)identifier usingBlock:(void (NS_NOESCAPE ^)(void))block {
     if (!block || identifier.length <= 0) return NO;
     static dispatch_once_t onceToken;
     static NSMutableSet<NSString *> *_executedIdentifiers;
