@@ -325,7 +325,7 @@ static NSInteger isNotchedScreen = -1;
 }
 
 + (BOOL)isRegularScreen {
-    return [self isIPad] || (!self.isZoomedMode && ([self is67InchScreen] || [self is65InchScreen] || [self is61InchScreenAndiPhone12] || [self is61InchScreen] || [self is55InchScreen]));
+    return [self isIPad] || (!self.isZoomedMode && ([self is67InchScreen] || [self is65InchScreen] || [self is61InchScreen] || [self is55InchScreen]));
 }
 
 static NSInteger is67InchScreen = -1;
