@@ -277,6 +277,14 @@ static NSInteger isSimulator = -1;
     return isSimulator > 0;
 }
 
+static NSInteger isAppExtension = -1;
++ (BOOL)isAppExtension {
+    if (isAppExtension < 0) {
+        isAppExtension = [NSBundle.mainBundle.bundlePath hasSuffix:@".appex"] ? 1 : 0;
+    }
+    return isAppExtension > 0;
+}
+
 + (double)versionForiOS {
     return [[[UIDevice currentDevice] systemVersion] doubleValue];
 }

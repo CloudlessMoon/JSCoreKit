@@ -42,6 +42,9 @@ typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
 @property (class, nonatomic, readonly) BOOL isIPhone;
 @property (class, nonatomic, readonly) BOOL isSimulator;
 
+/// 是否来自小组件
+@property (class, nonatomic, readonly) BOOL isAppExtension;
+
 /// 操作系统版本号，只获取第二级的版本号，例如 10.3.1 只会得到 10.3
 @property (class, nonatomic, readonly) double versionForiOS;
 
