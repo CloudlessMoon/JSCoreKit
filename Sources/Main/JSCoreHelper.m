@@ -229,8 +229,7 @@ static NSInteger isMac = -1;
     if (isMac < 0) {
         if (@available(iOS 14.0, *)) {
             isMac = ([NSProcessInfo processInfo].isiOSAppOnMac || [NSProcessInfo processInfo].isMacCatalystApp) ? 1 : 0;
-        }
-        if (@available(iOS 13.0, *)) {
+        } else if (@available(iOS 13.0, *)) {
             isMac = [NSProcessInfo processInfo].isMacCatalystApp ? 1 : 0;
         }
     }
