@@ -11,6 +11,14 @@
 #import "UIApplication+JSCore.h"
 #import <sys/utsname.h>
 
+@interface JSCoreHelperEmptyViewController : UIViewController
+@end
+@implementation JSCoreHelperEmptyViewController
+- (BOOL)shouldAutorotate {
+    return NO;
+}
+@end
+
 @implementation JSCoreHelper
 
 + (BOOL)executeOnceWithIdentifier:(NSString *)identifier usingBlock:(void (NS_NOESCAPE ^)(void))block {
@@ -36,6 +44,24 @@
 @end
 
 @implementation JSCoreHelper (Device)
+
++ (NSString *)appVersion {
+    static NSString *appVersion = @"";
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        appVersion = [NSBundle.mainBundle.infoDictionary objectForKey:@"CFBundleShortVersionString"];
+    });
+    return appVersion;
+}
+
++ (NSString *)appBuildVersion {
+    static NSString *appBuildVersion = @"";
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        appBuildVersion = [NSBundle.mainBundle.infoDictionary objectForKey:@"CFBundleVersion"];
+    });
+    return appBuildVersion;
+}
 
 + (NSString *)deviceModel {
     if (self.isSimulator) {
@@ -241,7 +267,7 @@ static NSInteger isIPad = -1;
     if (isIPad < 0) {
         JSBeginIgnoreDeprecatedWarning
         isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 1 : 0;
-        JSEndIgnoreClangWarning
+        JSEndIgnoreDeprecatedWarning
     }
     return isIPad > 0;
 }
@@ -284,8 +310,8 @@ static NSInteger isAppExtension = -1;
     return isAppExtension > 0;
 }
 
-+ (double)versionForiOS {
-    return [[[UIDevice currentDevice] systemVersion] doubleValue];
++ (double)systemVersion {
+    return UIDevice.currentDevice.systemVersion.doubleValue;
 }
 
 static NSInteger isNotchedScreen = -1;
@@ -312,7 +338,7 @@ static NSInteger isNotchedScreen = -1;
                     UIWindow *window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
                     peripheryInsets = window.safeAreaInsets;
                     if (peripheryInsets.bottom <= 0) {
-                        UIViewController *viewController = [UIViewController new];
+                        JSCoreHelperEmptyViewController *viewController = [JSCoreHelperEmptyViewController new];
                         window.rootViewController = viewController;
                         if (CGRectGetMinY(viewController.view.frame) > 20) {
                             peripheryInsets.bottom = 1;
@@ -496,19 +522,19 @@ static NSInteger is35InchScreen = -1;
 }
 
 + (CGFloat)navigationBarHeight {
-    return (self.isIPad ? (self.versionForiOS >= 12.0 ? 50 : 44) : (self.isLandscape ? (self.isRegularScreen ? 44 : 32) : 44));
+    return (self.isIPad ? (self.systemVersion >= 12.0 ? 50 : 44) : (self.isLandscape ? (self.isRegularScreen ? 44 : 32) : 44));
 }
 
 + (CGFloat)navigationContentTop {
-    return self.navigationBarHeight + self.statusBarHeight;
+    return self.statusBarHeight + self.navigationBarHeight;
 }
 
 + (CGFloat)toolBarHeight {
-    return (self.isIPad ? ([self isNotchedScreen] ? 70 : (self.versionForiOS >= 12.0 ? 50 : 44)) : (self.isLandscape ? (self.isRegularScreen ? 44 : 32) : 44) + self.safeAreaInsetsForDeviceWithNotch.bottom);
+    return (self.isIPad ? ([self isNotchedScreen] ? 70 : (self.systemVersion >= 12.0 ? 50 : 44)) : (self.isLandscape ? (self.isRegularScreen ? 44 : 32) : 44) + self.safeAreaInsetsForDeviceWithNotch.bottom);
 }
 
 + (CGFloat)tabBarHeight {
-    return (self.isIPad ? ([self isNotchedScreen] ? 65 : (self.versionForiOS >= 12.0 ? 50 : 49)) : (self.isLandscape ? (self.isRegularScreen ? 49 : 32) : 49) + self.safeAreaInsetsForDeviceWithNotch.bottom);
+    return (self.isIPad ? ([self isNotchedScreen] ? 65 : (self.systemVersion >= 12.0 ? 50 : 49)) : (self.isLandscape ? (self.isRegularScreen ? 49 : 32) : 49) + self.safeAreaInsetsForDeviceWithNotch.bottom);
 }
 
 + (BOOL)isSplitScreenForiPad {

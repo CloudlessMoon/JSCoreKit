@@ -4,8 +4,9 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 target 'JSCoreKitExample' do
   pod 'JSCoreKit', :path => '..'
-  pod 'LookinServer', :configurations => ['Debug']
+  pod "LookinServer", "~> 1.0.2", :configurations => ["Debug"]
   pod 'MLeaksFinder', :configurations => ['Debug']
+  pod "FBRetainCycleDetector", :git => "https://github.com/jiasongs/FBRetainCycleDetector.git", :configurations => ["Debug"]
 end
 
 

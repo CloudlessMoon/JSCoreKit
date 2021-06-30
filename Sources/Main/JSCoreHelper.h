@@ -28,6 +28,11 @@ typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
 
 @interface JSCoreHelper (Device)
 
+/// App版本号
+@property (class, nonatomic, readonly) NSString *appVersion;
+/// App Build版本号
+@property (class, nonatomic, readonly) NSString *appBuildVersion;
+
 /// 如 iPhone12,5、iPad6,8
 /// @NEW_DEVICE_CHECKER
 @property (class, nonatomic, readonly) NSString *deviceModel;
@@ -46,7 +51,7 @@ typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
 @property (class, nonatomic, readonly) BOOL isAppExtension;
 
 /// 操作系统版本号，只获取第二级的版本号，例如 10.3.1 只会得到 10.3
-@property (class, nonatomic, readonly) double versionForiOS;
+@property (class, nonatomic, readonly) double systemVersion;
 
 /// 带物理凹槽的刘海屏或者使用 Home Indicator 类型的设备
 @property (class, nonatomic, readonly) BOOL isNotchedScreen;
