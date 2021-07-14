@@ -316,17 +316,14 @@ static NSInteger isAppExtension = -1;
 
 static NSInteger isNotchedScreen = -1;
 + (BOOL)isNotchedScreen {
-    if (self.isMac) {
-        /// mac下有状态栏遮挡, 所以也归于全面屏的行列
-        isNotchedScreen = 1;
-    }
+    NSAssert(NSThread.isMainThread, @"请在主线程调用！");
     if (@available(iOS 11, *)) {
         if (isNotchedScreen < 0) {
             if (@available(iOS 12.0, *)) {
                 /*
                  检测方式解释/测试要点：
                  1. iOS 11 与 iOS 12 可能行为不同，所以要分别测试。
-                 2. 与触发 isNotchedScreen 方法时的进程有关，例如 https://github.com/Tencent/QMUI_iOS/issues/482#issuecomment-456051738 里提到的 [NSObject performSelectorOnMainThread:withObject:waitUntilDone:NO] 就会导致较多的异常。
+                 2. 与触发 [QMUIHelper isNotchedScreen] 方法时的进程有关，例如 https://github.com/Tencent/QMUI_iOS/issues/482#issuecomment-456051738 里提到的 [NSObject performSelectorOnMainThread:withObject:waitUntilDone:NO] 就会导致较多的异常。
                  3. iOS 12 下，在非第2点里提到的情况下，iPhone、iPad 均可通过 UIScreen -_peripheryInsets 方法的返回值区分，但如果满足了第2点，则 iPad 无法使用这个方法，这种情况下要依赖第4点。
                  4. iOS 12 下，不管是否满足第2点，不管是什么设备类型，均可以通过一个满屏的 UIWindow 的 rootViewController.view.frame.origin.y 的值来区分，如果是非全面屏，这个值必定为20，如果是全面屏，则可能是24或44等不同的值。但由于创建 UIWindow、UIViewController 等均属于较大消耗，所以只在前面的步骤无法区分的情况下才会使用第4点。
                  5. 对于第4点，经测试与当前设备的方向、是否有勾选 project 里的 General - Hide status bar、当前是否处于来电模式的状态栏这些都没关系。
@@ -338,6 +335,7 @@ static NSInteger isNotchedScreen = -1;
                     UIWindow *window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
                     peripheryInsets = window.safeAreaInsets;
                     if (peripheryInsets.bottom <= 0) {
+                        /// https://github.com/Tencent/QMUI_iOS/issues/1263
                         JSCoreHelperEmptyViewController *viewController = [JSCoreHelperEmptyViewController new];
                         window.rootViewController = viewController;
                         if (CGRectGetMinY(viewController.view.frame) > 20) {
