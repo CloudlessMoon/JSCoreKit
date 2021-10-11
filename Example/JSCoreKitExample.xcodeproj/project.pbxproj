@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		168F6A7761EB110A8126D379 /* libPods-JSCoreKitExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC6B044F249C80810E2DF92A /* libPods-JSCoreKitExample.a */; };
 		7AFACF79250080870065F9E7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AFACF78250080870065F9E7 /* AppDelegate.m */; };
 		7AFACF7F250080870065F9E7 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AFACF7E250080870065F9E7 /* ViewController.m */; };
 		7AFACF82250080870065F9E7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AFACF80250080870065F9E7 /* Main.storyboard */; };
 		7AFACF84250080880065F9E7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7AFACF83250080880065F9E7 /* Assets.xcassets */; };
 		7AFACF87250080880065F9E7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AFACF85250080880065F9E7 /* LaunchScreen.storyboard */; };
 		7AFACF8A250080880065F9E7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AFACF89250080880065F9E7 /* main.m */; };
+		7B87FD125AE362FCC9ED5C61 /* Pods_JSCoreKitExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1231A433AB1A9F239B8A35B /* Pods_JSCoreKitExample.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,7 +29,7 @@
 		7AFACF86250080880065F9E7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7AFACF88250080880065F9E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7AFACF89250080880065F9E7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		FC6B044F249C80810E2DF92A /* libPods-JSCoreKitExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JSCoreKitExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1231A433AB1A9F239B8A35B /* Pods_JSCoreKitExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_JSCoreKitExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				168F6A7761EB110A8126D379 /* libPods-JSCoreKitExample.a in Frameworks */,
+				7B87FD125AE362FCC9ED5C61 /* Pods_JSCoreKitExample.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -56,7 +56,7 @@
 		3226368F236500EECD940F53 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				FC6B044F249C80810E2DF92A /* libPods-JSCoreKitExample.a */,
+				B1231A433AB1A9F239B8A35B /* Pods_JSCoreKitExample.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

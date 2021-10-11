@@ -30,17 +30,4 @@
     return result;
 }
 
-+ (NSComparisonResult)compareSystemVersion:(NSString *)currentVersion toVersion:(NSString *)targetVersion {
-    NSParameterAssert(currentVersion && targetVersion);
-    if ([currentVersion componentsSeparatedByString:@"."].count == 2 && [targetVersion componentsSeparatedByString:@"."].count == 2) {
-        double fromVersion = currentVersion.doubleValue * 100;
-        double toVersion = targetVersion.doubleValue * 100;
-        if (fromVersion == toVersion) {
-            return NSOrderedSame;
-        }
-        return fromVersion > toVersion ? NSOrderedDescending : NSOrderedAscending;
-    }
-    return [currentVersion compare:targetVersion options:NSNumericSearch];
-}
-
 @end

@@ -17,7 +17,7 @@
 
 - (void)setJs_top:(CGFloat)top {
     CGRect rect = self.frame;
-    rect.origin.y = JSCGFlat(top);
+    rect.origin.y = top;
     self.frame = rect;
 }
 
@@ -27,7 +27,7 @@
 
 - (void)setJs_left:(CGFloat)left {
     CGRect rect = self.frame;
-    rect.origin.x = JSCGFlat(left);
+    rect.origin.x = left;
     self.frame = rect;
 }
 
@@ -37,7 +37,7 @@
 
 - (void)setJs_bottom:(CGFloat)bottom {
     CGRect rect = self.frame;
-    rect.origin.y = JSCGFlat(bottom - CGRectGetHeight(self.frame));
+    rect.origin.y = bottom - CGRectGetHeight(self.frame);
     self.frame = rect;
 }
 
@@ -47,7 +47,7 @@
 
 - (void)setJs_right:(CGFloat)right {
     CGRect rect = self.frame;
-    rect.origin.x = JSCGFlat(right - CGRectGetWidth(self.frame));
+    rect.origin.x = right - CGRectGetWidth(self.frame);
     self.frame = rect;
 }
 
@@ -57,7 +57,7 @@
 
 - (void)setJs_width:(CGFloat)width {
     CGRect rect = self.frame;
-    rect.size.width = JSCGFlat(width);
+    rect.size.width = width;
     self.frame = rect;
 }
 
@@ -67,7 +67,7 @@
 
 - (void)setJs_height:(CGFloat)height {
     CGRect rect = self.frame;
-    rect.size.height = JSCGFlat(height);
+    rect.size.height = height;
     self.frame = rect;
 }
 
@@ -77,8 +77,8 @@
 
 - (void)setJs_origin:(CGPoint)js_origin {
     CGRect rect = self.frame;
-    rect.origin.x = JSCGFlat(js_origin.x);
-    rect.origin.y = JSCGFlat(js_origin.y);
+    rect.origin.x = js_origin.x;
+    rect.origin.y = js_origin.y;
     self.frame = rect;
 }
 
@@ -88,8 +88,8 @@
 
 - (void)setJs_size:(CGSize)js_size {
     CGRect rect = self.frame;
-    rect.size.width = JSCGFlat(js_size.width);
-    rect.size.height = JSCGFlat(js_size.height);
+    rect.size.width = js_size.width;
+    rect.size.height = js_size.height;
     self.frame = rect;
 }
 

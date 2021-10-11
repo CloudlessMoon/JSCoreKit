@@ -11,108 +11,62 @@
 #import "JSCoreMacroVariable.h"
 #import <objc/runtime.h>
 
-#pragma mark - String
-
-FOUNDATION_STATIC_INLINE NSString *
-JSStringFromDouble(double value, NSUInteger precision) {
-    NSString *formatString = [NSString stringWithFormat:@"%%.%@lf", @(precision)];
-    NSString *toString = [NSString stringWithFormat:formatString, value];
-    return toString;
-}
-
-FOUNDATION_STATIC_INLINE NSString *
-JSStringFromFloat(float value, NSUInteger precision) {
-    NSString *formatString = [NSString stringWithFormat:@"%%.%@f", @(precision)];
-    NSString *toString = [NSString stringWithFormat:formatString, value];
-    return toString;
-}
-
-FOUNDATION_STATIC_INLINE NSString *
-JSStringFromCGFloat(CGFloat value, NSUInteger precision) {
-    NSString *formatString = [NSString stringWithFormat:@"%%.%@f", @(precision)];
-    NSString *toString = [NSString stringWithFormat:formatString, value];
-    return toString;
-}
-
-#pragma mark - Double
-
-FOUNDATION_STATIC_INLINE double
-JSDoubleToFixed(double value, NSUInteger precision) {
-    return [JSStringFromDouble(value, precision) doubleValue];
-}
-
-#pragma mark - Float
-
-FOUNDATION_STATIC_INLINE float
-JSFloatToFixed(float value, NSUInteger precision) {
-    return [JSStringFromFloat(value, precision) floatValue];
-}
-
 #pragma mark - CGFloat
-
-CG_INLINE CGFloat
-JSCGFloatToFixed(CGFloat value, NSUInteger precision) {
-#if CGFLOAT_IS_DOUBLE
-    CGFloat result = [JSStringFromCGFloat(value, precision) doubleValue];
-#else
-    CGFloat result = [JSStringFromCGFloat(value, precision) floatValue];
-#endif
-    return result;
-}
-
-CG_INLINE CGFloat
-JSCGRemoveFloatMin(CGFloat floatValue) {
-    return floatValue == CGFLOAT_MIN ? 0 : floatValue;
-}
-
-CG_INLINE CGFloat
-JSCGFlatSpecificScale(CGFloat floatValue, CGFloat scale) {
-    floatValue = JSCGRemoveFloatMin(floatValue);
-    scale = scale ? : UIScreen.mainScreen.scale;
-    CGFloat JSFlattedValue = ceil(floatValue * scale) / scale;
-    return JSFlattedValue;
-}
-
-CG_INLINE CGFloat
-JSCGFlat(CGFloat floatValue) {
-    return JSCGFlatSpecificScale(floatValue, 0);
-}
 
 /// 检测某个数值如果为 NaN 则将其转换为 0，避免布局中出现 crash
 CG_INLINE CGFloat
 JSCGFloatSafeValue(CGFloat value) {
-    return isnan(value) ? 0 : value;
+    return isnan(value) || isinf(value) ? 0 : value;
 }
 
-#pragma mark - CGPoint
+#pragma mark - UIEdgeInsets
 
-/// 两个point相加
-CG_INLINE CGPoint
-JSCGPointUnion(CGPoint point1, CGPoint point2) {
-    return CGPointMake(JSCGFlat(point1.x + point2.x), JSCGFlat(point1.y + point2.y));
+/// 获取UIEdgeInsets在水平方向上的值
+CG_INLINE CGFloat
+JSUIEdgeInsetsGetHorizontalValue(UIEdgeInsets insets) {
+    return insets.left + insets.right;
 }
 
-/// 获取rect的center，包括rect本身的x/y偏移
-CG_INLINE CGPoint
-JSCGPointGetCenterWithRect(CGRect rect) {
-    return CGPointMake(JSCGFlat(CGRectGetMidX(rect)), JSCGFlat(CGRectGetMidY(rect)));
+/// 获取UIEdgeInsets在垂直方向上的值
+CG_INLINE CGFloat
+JSUIEdgeInsetsGetVerticalValue(UIEdgeInsets insets) {
+    return insets.top + insets.bottom;
 }
 
-CG_INLINE CGPoint
-JSCGPointGetCenterWithSize(CGSize size) {
-    return CGPointMake(JSCGFlat(size.width / 2.0), JSCGFlat(size.height / 2.0));
+/// 将两个UIEdgeInsets合并为一个
+CG_INLINE UIEdgeInsets
+JSUIEdgeInsetsConcat(UIEdgeInsets insets1, UIEdgeInsets insets2) {
+    insets1.top += insets2.top;
+    insets1.left += insets2.left;
+    insets1.bottom += insets2.bottom;
+    insets1.right += insets2.right;
+    return insets1;
 }
 
-CG_INLINE CGPoint
-JSCGPointToFixed(CGPoint point, NSUInteger precision) {
-    CGPoint result = CGPointMake(JSCGFloatToFixed(point.x, precision), JSCGFloatToFixed(point.y, precision));
-    return result;
+#pragma mark - CGSize
+
+/// 判断一个 CGSize 是否存在 NaN
+CG_INLINE BOOL
+JSCGSizeIsNaN(CGSize size) {
+    return isnan(size.width) || isnan(size.height);
 }
 
-CG_INLINE CGPoint
-JSCGPointRemoveFloatMin(CGPoint point) {
-    CGPoint result = CGPointMake(JSCGRemoveFloatMin(point.x), JSCGRemoveFloatMin(point.y));
-    return result;
+/// 判断一个 CGSize 是否存在 infinite
+CG_INLINE BOOL
+JSCGSizeIsInf(CGSize size) {
+    return isinf(size.width) || isinf(size.height);
+}
+
+/// 判断一个 CGSize 是否为空（宽或高为0）
+CG_INLINE BOOL
+JSCGSizeIsEmpty(CGSize size) {
+    return size.width <= 0 || size.height <= 0;
+}
+
+/// 判断一个 CGSize 是否合法（例如不带无穷大的值、不带非法数字）
+CG_INLINE BOOL
+JSCGSizeIsValidated(CGSize size) {
+    return !JSCGSizeIsEmpty(size) && !JSCGSizeIsInf(size) && !JSCGSizeIsNaN(size);
 }
 
 #pragma mark - CGRect
@@ -135,21 +89,6 @@ JSCGRectIsValidated(CGRect rect) {
 CG_INLINE CGRect
 JSCGRectSafeValue(CGRect rect) {
     return CGRectMake(JSCGFloatSafeValue(CGRectGetMinX(rect)), JSCGFloatSafeValue(CGRectGetMinY(rect)), JSCGFloatSafeValue(CGRectGetWidth(rect)), JSCGFloatSafeValue(CGRectGetHeight(rect)));
-}
-
-CG_INLINE CGRect
-JSCGRectFlatMake(CGFloat x, CGFloat y, CGFloat width, CGFloat height) {
-    return CGRectMake(JSCGFlat(x), JSCGFlat(y), JSCGFlat(width), JSCGFlat(height));
-}
-
-CG_INLINE CGRect
-JSCGRectFlatted(CGRect rect) {
-    return CGRectMake(JSCGFlat(rect.origin.x), JSCGFlat(rect.origin.y), JSCGFlat(rect.size.width), JSCGFlat(rect.size.height));
-}
-
-CG_INLINE CGRect
-JSCGRectMakeWithSize(CGSize size) {
-    return CGRectMake(0, 0, size.width, size.height);
 }
 
 #pragma mark - Transform
@@ -181,11 +120,6 @@ JSCGRectApplyAffineTransformWithAnchorPoint(CGRect rect, CGAffineTransform t, CG
     CGFloat newHeight = maxY - minY;
     CGRect result = CGRectMake(minX, minY, newWidth, newHeight);
     return result;
-}
-
-CG_INLINE CGRect
-JSCGRectApplyScale(CGRect rect, CGFloat scale) {
-    return JSCGRectFlatted(CGRectMake(CGRectGetMinX(rect) * scale, CGRectGetMinY(rect) * scale, CGRectGetWidth(rect) * scale, CGRectGetHeight(rect) * scale));
 }
 
 #pragma mark - Runtime
@@ -242,42 +176,6 @@ JSRuntimeOverrideImplementation(Class targetClass, SEL targetSelector, id (^impl
     }
     
     return YES;
-}
-
-#pragma mark - 线程相关
-
-DISPATCH_INLINE void
-JSAsyncExecuteOnQueue(dispatch_queue_t queue, dispatch_block_t block) {
-    dispatch_async(queue, block);
-}
-
-DISPATCH_INLINE void   /// 全局并行队列
-JSAsyncExecuteOnGlobalQueue(dispatch_block_t block){
-    JSAsyncExecuteOnQueue(dispatch_get_global_queue(0, 0), block);
-}
-
-DISPATCH_INLINE void
-JSAsyncExecuteOnMainQueue(dispatch_block_t block) {
-    if (dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL) == dispatch_queue_get_label(dispatch_get_main_queue())) {
-        block();
-    } else {
-        JSAsyncExecuteOnQueue(dispatch_get_main_queue(), block);
-    }
-}
-
-DISPATCH_INLINE void
-JSAfterOnMainQueue(CGFloat delayInSeconds, dispatch_block_t block) {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), block);
-}
-
-DISPATCH_INLINE dispatch_queue_t
-JSCreateSerialQueue(NSString *label) {
-    return dispatch_queue_create(label.UTF8String, DISPATCH_QUEUE_SERIAL);
-}
-
-DISPATCH_INLINE dispatch_queue_t
-JSCreateConcurrentQueue(NSString *label) {
-    return dispatch_queue_create(label.UTF8String, DISPATCH_QUEUE_CONCURRENT);
 }
 
 #endif /* JSCoreMacroMethod_h */

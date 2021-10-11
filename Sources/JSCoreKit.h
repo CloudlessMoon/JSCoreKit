@@ -14,32 +14,22 @@
 #import <JSCoreKit/JSCoreMacroVariable.h>
 #import <JSCoreKit/JSCoreMacroMethod.h>
 #import <JSCoreKit/JSCoreWeakProxy.h>
-#import <JSCoreKit/NSNumber+JSCore.h>
 #import <JSCoreKit/NSObject+JSCore.h>
 #import <JSCoreKit/UIView+JSCoreLayout.h>
 #import <JSCoreKit/CALayer+JSCore.h>
-#import <JSCoreKit/UIApplication+JSCore.h>
 #import <JSCoreKit/JSCoreHelper.h>
 #import <JSCoreKit/JSCoreHelper+Animation.h>
-#import <JSCoreKit/JSCoreHelper+Device.h>
-#import <JSCoreKit/JSCoreHelper+Application.h>
-#import <JSCoreKit/JSCoreHelper+LayoutGuide.h>
 
 #else
 
 #import "JSCoreMacroVariable.h"
 #import "JSCoreMacroMethod.h"
 #import "JSCoreWeakProxy.h"
-#import "NSNumber+JSCore.h"
 #import "NSObject+JSCore.h"
 #import "UIView+JSCoreLayout.h"
 #import "CALayer+JSCore.h"
-#import "UIApplication+JSCore.h"
 #import "JSCoreHelper.h"
 #import "JSCoreHelper+Animation.h"
-#import "JSCoreHelper+Device.h"
-#import "JSCoreHelper+Application.h"
-#import "JSCoreHelper+LayoutGuide.h"
 
 #endif /* __has_include */
 

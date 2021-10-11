@@ -11,9 +11,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import <os/lock.h>
 #import "JSCoreWeakProxy.h"
-#import "NSNumber+JSCore.h"
 #import <objc/runtime.h>
 
 #pragma mark - Clang
@@ -98,7 +96,7 @@ _Pragma("clang diagnostic pop")
 #define JSSynthesizeNSUIntegerProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, NSUInteger, numberWithUnsignedInteger, unsignedIntegerValue)
 
 /// @property (nonatomic, assign) CGFloat xxx
-#define JSSynthesizeCGFloatProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, CGFloat, numberWithDouble, js_CGFloatValue)
+#define JSSynthesizeCGFloatProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, CGFloat, numberWithDouble, doubleValue)
 
 /// @property (nonatomic, assign) CGPoint xxx
 #define JSSynthesizeCGPointProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, CGPoint, valueWithCGPoint, CGPointValue)
@@ -111,23 +109,5 @@ _Pragma("clang diagnostic pop")
 
 /// @property (nonatomic, assign) UIEdgeInsets xxx
 #define JSSynthesizeUIEdgeInsetsProperty(_getterName, _setterName) _JSSynthesizeNonObject(_getterName, _setterName, UIEdgeInsets, valueWithUIEdgeInsets, UIEdgeInsetsValue)
-
-#pragma mark - Lock
-
-#ifndef JSLockDeclare
-#define JSLockDeclare(lock) os_unfair_lock lock;
-#endif
-
-#ifndef JSLockInit
-#define JSLockInit(lock) lock = OS_UNFAIR_LOCK_INIT;
-#endif
-
-#ifndef JSLockAdd
-#define JSLockAdd(lock) os_unfair_lock_lock(&lock);
-#endif
-
-#ifndef JSLockRemove
-#define JSLockRemove(lock) os_unfair_lock_unlock(&lock);
-#endif
 
 #endif /* JSCoreMacroVariable_h */

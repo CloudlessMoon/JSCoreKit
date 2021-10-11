@@ -1,12 +1,15 @@
-platform :ios, '10.0'
+platform :ios, "10.0"
+use_frameworks! :linkage => :static
 
-source 'https://github.com/CocoaPods/Specs.git'
+source "https://github.com/CocoaPods/Specs.git"
 
-target 'JSCoreKitExample' do
-  pod 'JSCoreKit', :path => '..'
-  pod "LookinServer", "~> 1.0.2", :configurations => ["Debug"]
-  pod 'MLeaksFinder', :configurations => ['Debug']
-  pod "FBRetainCycleDetector", :git => "https://github.com/jiasongs/FBRetainCycleDetector.git", :configurations => ["Debug"]
+def pod_Common
+  pod "JSCoreKit", :path => ".."
 end
 
-
+target "JSCoreKitExample" do
+  pod_Common
+  pod "LookinServer", "~> 1.0.4", :configurations => ["Debug"]
+  pod "MLeaksFinder", :configurations => ["Debug"]
+  pod "FBRetainCycleDetector", :git => "https://github.com/jiasongs/FBRetainCycleDetector.git", :configurations => ["Debug"]
+end
