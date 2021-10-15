@@ -180,7 +180,7 @@ JSRuntimeOverrideImplementation(Class targetClass, SEL targetSelector, id (^impl
     return YES;
 }
 
-#pragma mark - Thread
+#pragma mark - 线程
 
 DISPATCH_INLINE BOOL
 JSIsMainQueueForQueue(dispatch_queue_t _Nullable queue) {
