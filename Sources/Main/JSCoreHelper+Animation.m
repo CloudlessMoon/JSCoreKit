@@ -83,7 +83,7 @@
 }
 
 + (CGFloat)degreesToRadians:(CGFloat)degrees {
-    return degrees / 180.0 * M_PI;
+    return degrees * M_PI / 180.0;
 }
 
 @end
