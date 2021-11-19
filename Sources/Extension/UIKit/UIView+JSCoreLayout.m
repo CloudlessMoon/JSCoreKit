@@ -8,8 +8,44 @@
 
 #import "UIView+JSCoreLayout.h"
 #import "JSCoreMacroMethod.h"
+#import "JSCoreHelper.h"
+
+const CGSize JSCoreViewFixedSizeNone = {-1, -1};
 
 @implementation UIView (JSCoreLayout)
+
++ (void)load {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        JSRuntimeOverrideImplementation(UIView.class, @selector(setFrame:), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
+            return ^(UIView *selfObject, CGRect frame) {
+                
+                if (!CGSizeEqualToSize(selfObject.js_fixedSize, JSCoreViewFixedSizeNone)) {
+                    frame.size = selfObject.js_fixedSize;
+                }
+
+                // call super
+                void (*originSelectorIMP)(id, SEL, CGRect);
+                originSelectorIMP = (void (*)(id, SEL, CGRect))originalIMPProvider();
+                originSelectorIMP(selfObject, originCMD, frame);
+            };
+        });
+        
+        JSRuntimeOverrideImplementation(UIView.class, @selector(setBounds:), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
+            return ^(UIView *selfObject, CGRect bounds) {
+                
+                if (!CGSizeEqualToSize(selfObject.js_fixedSize, JSCoreViewFixedSizeNone)) {
+                    bounds.size = selfObject.js_fixedSize;
+                }
+
+                // call super
+                void (*originSelectorIMP)(id, SEL, CGRect);
+                originSelectorIMP = (void (*)(id, SEL, CGRect))originalIMPProvider();
+                originSelectorIMP(selfObject, originCMD, bounds);
+            };
+        });
+    });
+}
 
 - (CGFloat)js_top {
     return CGRectGetMinY(self.frame);
@@ -93,12 +129,63 @@
     self.frame = rect;
 }
 
+- (CGSize)js_fixedSize {
+    NSNumber *result = objc_getAssociatedObject(self, _cmd);
+    if (!result) {
+        return JSCoreViewFixedSizeNone;
+    }
+    return result.CGSizeValue;
+}
+
+- (void)setJs_fixedSize:(CGSize)js_fixedSize {
+    objc_setAssociatedObject(self, @selector(js_fixedSize), @(js_fixedSize), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    
+    if (!CGSizeEqualToSize(js_fixedSize, JSCoreViewFixedSizeNone)) {
+        self.js_sizeThatFitsBlock = ^CGSize(__kindof UIView * _Nonnull view, CGSize size, CGSize superResult) {
+            if (!CGSizeEqualToSize(view.js_fixedSize, JSCoreViewFixedSizeNone)) {
+                return view.js_fixedSize;
+            }
+            return superResult;
+        };
+        self.js_size = js_fixedSize;
+    }
+}
+
 - (CGRect)js_frameApplyTransform {
     return self.frame;
 }
 
 - (void)setJs_frameApplyTransform:(CGRect)js_frameApplyTransform {
     self.frame = JSCGRectApplyAffineTransformWithAnchorPoint(js_frameApplyTransform, self.transform, self.layer.anchorPoint);
+}
+
+- (CGSize (^)(__kindof UIView * _Nonnull, CGSize, CGSize))js_sizeThatFitsBlock {
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setJs_sizeThatFitsBlock:(CGSize (^)(__kindof UIView * _Nonnull, CGSize, CGSize))js_sizeThatFitsBlock {
+    objc_setAssociatedObject(self, @selector(js_sizeThatFitsBlock), js_sizeThatFitsBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    
+    if (!js_sizeThatFitsBlock) return;
+    
+    // Extend 每个实例对象的类是为了保证比子类的 sizeThatFits 逻辑要更晚调用
+    Class viewClass = self.class;
+    [JSCoreHelper executeOnceWithIdentifier:[NSString stringWithFormat:@"UIView %@-%@", NSStringFromClass(viewClass), NSStringFromSelector(_cmd)] usingBlock:^{
+        JSRuntimeOverrideImplementation(viewClass, @selector(sizeThatFits:), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
+            return ^CGSize(UIView *selfObject, CGSize firstArgv) {
+                
+                // call super
+                CGSize (*originSelectorIMP)(id, SEL, CGSize);
+                originSelectorIMP = (CGSize (*)(id, SEL, CGSize))originalIMPProvider();
+                CGSize originReturnValue = originSelectorIMP(selfObject, originCMD, firstArgv);
+                
+                if (selfObject.js_sizeThatFitsBlock && [selfObject isMemberOfClass:viewClass]) {
+                    originReturnValue = selfObject.js_sizeThatFitsBlock(selfObject, firstArgv, originReturnValue);
+                }
+                return originReturnValue;
+            };
+        });
+    }];
 }
 
 @end

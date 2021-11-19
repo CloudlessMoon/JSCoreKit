@@ -10,6 +10,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+UIKIT_EXTERN const CGSize JSCoreViewFixedSizeNone;
+
 @interface UIView (JSCoreLayout)
 
 /// 等价于 CGRectGetMinY(frame)
@@ -36,8 +38,14 @@ NS_ASSUME_NONNULL_BEGIN
 /// 等价于 self.frame.size
 @property (nonatomic, assign) CGSize js_size;
 
+/// 固定 size
+@property (nonatomic, assign) CGSize js_fixedSize;
+
 /// 将要设置的 frame 用 CGRectApplyAffineTransformWithAnchorPoint 处理后再设置
 @property (nonatomic, assign) CGRect js_frameApplyTransform;
+
+/// sizeThatFits
+@property (nullable, nonatomic, copy) CGSize (^js_sizeThatFitsBlock)(__kindof UIView *view, CGSize size, CGSize superResult);
 
 @end
 
