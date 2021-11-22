@@ -10,7 +10,7 @@
 #import "JSCoreMacroMethod.h"
 #import "JSCoreHelper.h"
 
-const CGSize JSCoreViewFixedSizeNone = {-1, -1};
+const CGSize JSCoreViewFixedSizeNone = {-1000, -1000};
 
 @implementation UIView (JSCoreLayout)
 
@@ -23,7 +23,7 @@ const CGSize JSCoreViewFixedSizeNone = {-1, -1};
                 if (!CGSizeEqualToSize(selfObject.js_fixedSize, JSCoreViewFixedSizeNone)) {
                     frame.size = selfObject.js_fixedSize;
                 }
-
+                
                 // call super
                 void (*originSelectorIMP)(id, SEL, CGRect);
                 originSelectorIMP = (void (*)(id, SEL, CGRect))originalIMPProvider();
@@ -37,7 +37,7 @@ const CGSize JSCoreViewFixedSizeNone = {-1, -1};
                 if (!CGSizeEqualToSize(selfObject.js_fixedSize, JSCoreViewFixedSizeNone)) {
                     bounds.size = selfObject.js_fixedSize;
                 }
-
+                
                 // call super
                 void (*originSelectorIMP)(id, SEL, CGRect);
                 originSelectorIMP = (void (*)(id, SEL, CGRect))originalIMPProvider();
