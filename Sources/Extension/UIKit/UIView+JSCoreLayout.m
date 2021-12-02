@@ -131,17 +131,18 @@ const CGSize JSCoreViewFixedSizeNone = {-1000, -1000};
 
 - (CGSize)js_fixedSize {
     NSNumber *result = objc_getAssociatedObject(self, _cmd);
-    if (!result) {
+    if (result) {
+        return result.CGSizeValue;
+    } else {
         return JSCoreViewFixedSizeNone;
     }
-    return result.CGSizeValue;
 }
 
 - (void)setJs_fixedSize:(CGSize)js_fixedSize {
     objc_setAssociatedObject(self, @selector(js_fixedSize), @(js_fixedSize), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
     if (!CGSizeEqualToSize(js_fixedSize, JSCoreViewFixedSizeNone)) {
-        self.js_sizeThatFitsBlock = ^CGSize(__kindof UIView * _Nonnull view, CGSize size, CGSize superResult) {
+        self.js_sizeThatFitsBlock = ^CGSize(__kindof UIView *view, CGSize size, CGSize superResult) {
             if (!CGSizeEqualToSize(view.js_fixedSize, JSCoreViewFixedSizeNone)) {
                 return view.js_fixedSize;
             }
@@ -159,11 +160,11 @@ const CGSize JSCoreViewFixedSizeNone = {-1000, -1000};
     self.frame = JSCGRectApplyAffineTransformWithAnchorPoint(js_frameApplyTransform, self.transform, self.layer.anchorPoint);
 }
 
-- (CGSize (^)(__kindof UIView * _Nonnull, CGSize, CGSize))js_sizeThatFitsBlock {
+- (CGSize (^)(__kindof UIView *, CGSize, CGSize))js_sizeThatFitsBlock {
     return objc_getAssociatedObject(self, _cmd);
 }
 
-- (void)setJs_sizeThatFitsBlock:(CGSize (^)(__kindof UIView * _Nonnull, CGSize, CGSize))js_sizeThatFitsBlock {
+- (void)setJs_sizeThatFitsBlock:(CGSize (^)(__kindof UIView *, CGSize, CGSize))js_sizeThatFitsBlock {
     objc_setAssociatedObject(self, @selector(js_sizeThatFitsBlock), js_sizeThatFitsBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
     
     if (!js_sizeThatFitsBlock) return;
