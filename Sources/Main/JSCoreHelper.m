@@ -6,6 +6,7 @@
 //
 
 #import "JSCoreHelper.h"
+#import <os/lock.h>
 
 @implementation JSCoreHelper
 
@@ -15,19 +16,21 @@
     }
     static dispatch_once_t onceToken;
     static NSMutableSet<NSString *> *executedIdentifiers;
-    static dispatch_queue_t queue;
+    static os_unfair_lock lock;
     dispatch_once(&onceToken, ^{
         executedIdentifiers = [NSMutableSet set];
-        queue = dispatch_queue_create("com.jscorehelper.once.queue", DISPATCH_QUEUE_SERIAL);
+        lock = OS_UNFAIR_LOCK_INIT;
     });
-    __block BOOL result = NO;
-    dispatch_sync(queue, ^{
-        if (![executedIdentifiers containsObject:identifier]) {
-            [executedIdentifiers addObject:identifier];
-            block();
-            result = YES;
-        }
-    });
+    os_unfair_lock_lock(&lock);
+    BOOL result = ![executedIdentifiers containsObject:identifier];
+    if (result) {
+        [executedIdentifiers addObject:identifier];
+    }
+    os_unfair_lock_unlock(&lock);
+    
+    if (result) {
+        block();
+    }
     return result;
 }
 
