@@ -150,7 +150,7 @@ JSRuntimeOverrideImplementation(Class targetClass, SEL targetSelector, id (^impl
             result = imp;
         } else {
             // 如果 superclass 里依然没有实现，则会返回一个 objc_msgForward 从而触发消息转发的流程
-            // https://github.com/Tencent/JS_iOS/issues/776
+            // https://github.com/Tencent/QMUI_iOS/issues/776
             Class superclass = class_getSuperclass(targetClass);
             result = class_getMethodImplementation(superclass, targetSelector);
         }
