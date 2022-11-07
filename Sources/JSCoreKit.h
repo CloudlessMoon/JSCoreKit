@@ -16,6 +16,7 @@
 #import <JSCoreKit/JSCoreWeakProxy.h>
 #import <JSCoreKit/NSObject+JSCore.h>
 #import <JSCoreKit/UIView+JSCoreLayout.h>
+#import <JSCoreKit/UIScrollView+JSCore.h>
 #import <JSCoreKit/CALayer+JSCore.h>
 #import <JSCoreKit/JSCoreHelper.h>
 #import <JSCoreKit/JSCoreHelper+Animation.h>
@@ -27,6 +28,7 @@
 #import "JSCoreWeakProxy.h"
 #import "NSObject+JSCore.h"
 #import "UIView+JSCoreLayout.h"
+#import "UIScrollView+JSCore.h"
 #import "CALayer+JSCore.h"
 #import "JSCoreHelper.h"
 #import "JSCoreHelper+Animation.h"

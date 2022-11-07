@@ -93,6 +93,49 @@ JSCGRectSafeValue(CGRect rect) {
     return CGRectMake(JSCGFloatSafeValue(CGRectGetMinX(rect)), JSCGFloatSafeValue(CGRectGetMinY(rect)), JSCGFloatSafeValue(CGRectGetWidth(rect)), JSCGFloatSafeValue(CGRectGetHeight(rect)));
 }
 
+CG_INLINE CGRect
+JSCGRectSetX(CGRect rect, CGFloat x) {
+    rect.origin.x = x;
+    return rect;
+}
+
+CG_INLINE CGRect
+JSCGRectSetY(CGRect rect, CGFloat y) {
+    rect.origin.y = y;
+    return rect;
+}
+
+CG_INLINE CGRect
+JSCGRectSetXY(CGRect rect, CGFloat x, CGFloat y) {
+    rect.origin.x = x;
+    rect.origin.y = y;
+    return rect;
+}
+
+CG_INLINE CGRect
+JSCGRectSetWidth(CGRect rect, CGFloat width) {
+    if (width < 0) {
+        return rect;
+    }
+    rect.size.width = width;
+    return rect;
+}
+
+CG_INLINE CGRect
+JSCGRectSetHeight(CGRect rect, CGFloat height) {
+    if (height < 0) {
+        return rect;
+    }
+    rect.size.height = height;
+    return rect;
+}
+
+CG_INLINE CGRect
+JSCGRectSetSize(CGRect rect, CGSize size) {
+    rect.size = size;
+    return rect;
+}
+
 #pragma mark - Transform
 
 CG_INLINE CGPoint

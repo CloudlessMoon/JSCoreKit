@@ -12,10 +12,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface JSCoreWeakProxy : NSProxy
 
-@property (nonatomic, weak, readonly) id target;
+@property (nullable, nonatomic, weak) id target;
 
-- (instancetype)initWithTarget:(id)target;
-+ (instancetype)proxyWithTarget:(id)target;
+- (instancetype)initWithTarget:(nullable id)target;
++ (instancetype)proxyWithTarget:(nullable id)target;
+
+- (id)forwardingTargetForSelector:(SEL)aSelector;
 
 @end
 

@@ -15,11 +15,18 @@
 }
 
 - (instancetype)initWithTarget:(id)target {
-    _target = target;
+    self.target = target;
     return self;
 }
 
-- (id)forwardingTargetForSelector:(SEL)selector {
+- (void)setTarget:(id)target {
+    if (target == self) {
+        return;
+    }
+    _target = target;
+}
+
+- (id)forwardingTargetForSelector:(SEL)aSelector {
     return _target;
 }
 
@@ -28,7 +35,7 @@
     [invocation setReturnValue:&null];
 }
 
-- (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
     return [NSObject instanceMethodSignatureForSelector:@selector(init)];
 }
 
