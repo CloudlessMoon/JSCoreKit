@@ -26,8 +26,12 @@
 }
 
 - (CGPoint)js_maximumContentOffset {
-    return CGPointMake(self.contentSize.width - self.js_width + self.adjustedContentInset.right,
-                       self.contentSize.height - self.js_height + self.adjustedContentInset.bottom);
+    if (self.js_canScroll) {
+        return CGPointMake(self.contentSize.width - self.js_width + self.adjustedContentInset.right,
+                           self.contentSize.height - self.js_height + self.adjustedContentInset.bottom);
+    } else {
+        return CGPointMake(-self.adjustedContentInset.left, -self.adjustedContentInset.top);
+    }
 }
 
 - (void)js_scrollToOffset:(CGPoint)offset animated:(BOOL)animated {
