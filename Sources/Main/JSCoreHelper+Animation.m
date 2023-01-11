@@ -9,6 +9,14 @@
 
 @implementation JSCoreHelper (Animation)
 
++ (UIViewAnimationOptions)animationOptionsCurveIn {
+    return 8<<16;
+}
+
++ (UIViewAnimationOptions)animationOptionsCurveOut {
+    return 7<<16;
+}
+
 + (CGFloat)interpolateValue:(CGFloat)value
                  inputRange:(NSArray<NSNumber *>*)inputRange
                 outputRange:(NSArray<NSNumber *>*)outputRange

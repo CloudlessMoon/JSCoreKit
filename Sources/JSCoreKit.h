@@ -20,6 +20,7 @@
 #import <JSCoreKit/CALayer+JSCore.h>
 #import <JSCoreKit/JSCoreHelper.h>
 #import <JSCoreKit/JSCoreHelper+Animation.h>
+#import <JSCoreKit/JSCoreHelper+Device.h>
 
 #else
 
@@ -32,6 +33,7 @@
 #import "CALayer+JSCore.h"
 #import "JSCoreHelper.h"
 #import "JSCoreHelper+Animation.h"
+#import "JSCoreHelper+Device.h"
 
 #endif /* __has_include */
 
