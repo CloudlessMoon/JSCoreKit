@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.summary              = "JSCoreKit"
   s.homepage             = "https://github.com/jiasongs/JSCoreKit"
   s.author               = { "jiasong" => "593908937@qq.com" }
-  s.platform             = :ios, "11.0"
+  s.platform             = :ios, "12.0"
   s.swift_versions       = ["4.2", "5.0"]
   s.source               = { :git => "https://github.com/jiasongs/JSCoreKit.git", :tag => "#{s.version}" }
   s.frameworks           = "Foundation", "UIKit", "CoreGraphics", "QuartzCore"
