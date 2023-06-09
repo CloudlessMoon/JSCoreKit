@@ -6,6 +6,7 @@
 //
 
 #import "JSCoreHelper+Animation.h"
+#import "JSCoreMacroMethod.h"
 
 @implementation JSCoreHelper (Animation)
 
@@ -61,7 +62,7 @@
             // 不做处理
         }
     }
-    return outputMin + (value - inputMin) * (outputMax - outputMin) / (inputMax - inputMin);
+    return JSCGFloatSafeValue(outputMin + (value - inputMin) * (outputMax - outputMin) / (inputMax - inputMin));
 }
 
 + (NSUInteger)_findIndexOfNearestValue:(CGFloat)value
