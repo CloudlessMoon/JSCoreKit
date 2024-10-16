@@ -40,6 +40,12 @@ JSCGFloatSafeValue(CGFloat value) {
     return isnan(value) || isinf(value) ? 0 : value;
 }
 
+/// 用于居中运算
+CG_INLINE CGFloat
+JSCGFloatGetCenter(CGFloat parent, CGFloat child) {
+    return (parent - child) / 2.0;
+}
+
 #pragma mark - UIEdgeInsets
 
 /// 获取UIEdgeInsets在水平方向上的值
@@ -153,6 +159,12 @@ CG_INLINE CGRect
 JSCGRectSetSize(CGRect rect, CGSize size) {
     rect.size = size;
     return rect;
+}
+
+/// 传入size，返回一个x/y为0的CGRect
+CG_INLINE CGRect
+JSCGRectMakeWithSize(CGSize size) {
+    return CGRectMake(0, 0, size.width, size.height);
 }
 
 #pragma mark - Transform

@@ -18,6 +18,7 @@
 #import <JSCoreKit/UIView+JSCoreLayout.h>
 #import <JSCoreKit/UIScrollView+JSCore.h>
 #import <JSCoreKit/CALayer+JSCore.h>
+#import <JSCoreKit/UIImage+JSCore.h>
 #import <JSCoreKit/JSCoreHelper.h>
 #import <JSCoreKit/JSCoreHelper+Animation.h>
 #import <JSCoreKit/JSCoreHelper+Device.h>
@@ -32,6 +33,7 @@
 #import "UIView+JSCoreLayout.h"
 #import "UIScrollView+JSCore.h"
 #import "CALayer+JSCore.h"
+#import "UIImage+JSCore.h"
 #import "JSCoreHelper.h"
 #import "JSCoreHelper+Animation.h"
 #import "JSCoreHelper+Device.h"
