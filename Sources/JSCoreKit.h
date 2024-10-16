@@ -21,6 +21,7 @@
 #import <JSCoreKit/JSCoreHelper.h>
 #import <JSCoreKit/JSCoreHelper+Animation.h>
 #import <JSCoreKit/JSCoreHelper+Device.h>
+#import <JSCoreKit/JSCoreHelper+LayoutGuide.h>
 
 #else
 
@@ -34,6 +35,7 @@
 #import "JSCoreHelper.h"
 #import "JSCoreHelper+Animation.h"
 #import "JSCoreHelper+Device.h"
+#import "JSCoreHelper+LayoutGuide.h"
 
 #endif /* __has_include */
 

@@ -14,7 +14,7 @@
 }
 
 + (BOOL)isMacCatalystApp {
-    static BOOL isMacCatalystApp;
+    static BOOL isMacCatalystApp = NO;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         if (@available(iOS 13.0, *)) {
@@ -25,7 +25,7 @@
 }
 
 + (BOOL)isiOSAppOnMac {
-    static BOOL isiOSAppOnMac;
+    static BOOL isiOSAppOnMac = NO;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         if (@available(iOS 14.0, *)) {
@@ -35,8 +35,18 @@
     return isiOSAppOnMac;
 }
 
++ (BOOL)isiOSAppOnVision {
+    static BOOL isiOSAppOnVision = NO;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSAssert(NO, @"暂不支持");
+        isiOSAppOnVision = NO;
+    });
+    return isiOSAppOnVision;
+}
+
 + (BOOL)isIPad {
-    static BOOL isIPad;
+    static BOOL isIPad = NO;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         isIPad = UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad;
@@ -45,7 +55,7 @@
 }
 
 + (BOOL)isIPod {
-    static BOOL isIPod;
+    static BOOL isIPod = NO;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         isIPod = [UIDevice.currentDevice.model rangeOfString:@"iPod touch"].location != NSNotFound;
@@ -54,7 +64,7 @@
 }
 
 + (BOOL)isIPhone {
-    static BOOL isIPhone;
+    static BOOL isIPhone = NO;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         isIPhone = [UIDevice.currentDevice.model rangeOfString:@"iPhone"].location != NSNotFound;
@@ -63,7 +73,7 @@
 }
 
 + (BOOL)isSimulator {
-    static BOOL isSimulator;
+    static BOOL isSimulator = NO;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
 #if TARGET_OS_SIMULATOR

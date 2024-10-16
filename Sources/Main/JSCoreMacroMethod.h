@@ -8,12 +8,31 @@
 #ifndef JSCoreMacroMethod_h
 #define JSCoreMacroMethod_h
 
+#import "JSCoreHelper+LayoutGuide.h"
 #import "JSCoreMacroVariable.h"
 #import <objc/runtime.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - CGFloat
+
+CG_INLINE CGFloat
+JSCeilPixelValue(CGFloat value) {
+    CGFloat scale = JSCoreHelper.displayScale;
+    return ceil(value * scale) / scale;
+}
+
+CG_INLINE CGFloat
+JSRoundPixelValue(CGFloat value) {
+    CGFloat scale = JSCoreHelper.displayScale;
+    return round(value * scale) / scale;
+}
+
+CG_INLINE CGFloat
+JSFloorPixelValue(CGFloat value) {
+    CGFloat scale = JSCoreHelper.displayScale;
+    return floor(value * scale) / scale;
+}
 
 /// 检测某个数值如果为 NaN 则将其转换为 0，避免布局中出现 crash
 CG_INLINE CGFloat

@@ -103,7 +103,7 @@
     CGFloat d = toValue;
     CGFloat x = (d - fromValue) * time;
     CGFloat result = fromValue + d + 1.0 - (1.0 / (coeff * x / d + 1)) * d;
-    //    NSLog(@"[%.2f-%.2f], coeff = %.2f, x = %.2f, result = %.2f", fromValue, d, coeff, x, result);
+    // NSLog(@"[%.2f-%.2f], coeff = %.2f, x = %.2f, result = %.2f", fromValue, d, coeff, x, result);
     return result;
 }
 

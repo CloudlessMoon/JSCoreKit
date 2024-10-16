@@ -26,12 +26,10 @@
 }
 
 - (CGPoint)js_maximumContentOffset {
-    if (self.js_canScroll) {
-        return CGPointMake(self.contentSize.width - self.js_width + self.adjustedContentInset.right,
-                           self.contentSize.height - self.js_height + self.adjustedContentInset.bottom);
-    } else {
-        return CGPointMake(-self.adjustedContentInset.left, -self.adjustedContentInset.top);
-    }
+    CGPoint minimum = self.js_minimumContentOffset;
+    CGPoint maximum = CGPointMake(self.contentSize.width - CGRectGetWidth(self.bounds) + self.adjustedContentInset.right,
+                                  self.contentSize.height - CGRectGetHeight(self.bounds) + self.adjustedContentInset.bottom);
+    return CGPointMake(MAX(minimum.x, maximum.x), MAX(minimum.y, maximum.y));
 }
 
 - (void)js_scrollToOffset:(CGPoint)offset animated:(BOOL)animated {
@@ -39,18 +37,11 @@
         return;
     }
     
-    if (!CGPointEqualToPoint(self.contentOffset, offset)) {
-        CGRect maxRect = CGRectMake(-self.adjustedContentInset.left,
-                                    -self.adjustedContentInset.top,
-                                    self.contentSize.width - self.js_width + self.adjustedContentInset.right + self.adjustedContentInset.left,
-                                    self.contentSize.height - self.js_height + self.adjustedContentInset.bottom + self.adjustedContentInset.top);
-        if (!CGRectContainsPoint(maxRect, offset)) {
-            CGFloat x = MIN(MAX(offset.x, CGRectGetMinX(maxRect)), CGRectGetMaxX(maxRect));
-            CGFloat y = MIN(MAX(offset.y, CGRectGetMinY(maxRect)), CGRectGetMaxY(maxRect));
-            offset = CGPointMake(x, y);
-        }
-        [self setContentOffset:offset animated:animated];
-    }
+    CGPoint minimumOffset = self.js_minimumContentOffset;
+    CGPoint maximumOffset = self.js_maximumContentOffset;
+    CGFloat x = MIN(MAX(offset.x, minimumOffset.x), maximumOffset.x);
+    CGFloat y = MIN(MAX(offset.y, minimumOffset.y), maximumOffset.y);
+    [self setContentOffset:CGPointMake(x, y) animated:animated];
 }
 
 @end
