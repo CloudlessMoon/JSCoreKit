@@ -14,25 +14,95 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark - CGFloat
+typedef NS_ENUM(NSInteger, JSDecimalRoundingRule) {
+    JSDecimalRoundingRuleRound,
+    JSDecimalRoundingRuleCeil,
+    JSDecimalRoundingRuleFloor,
+};
 
 CG_INLINE CGFloat
-JSCeilPixelValue(CGFloat value) {
-    CGFloat scale = JSCoreHelper.displayScale;
-    return ceil(value * scale) / scale;
+__JSCGFloatMakePixelValue(CGFloat value, JSDecimalRoundingRule rule) {
+    /// 以下算法是由「yoga -> YGPixelGrid.h -> YGRoundValueToPixelGrid」中翻译
+    
+    BOOL(^inexactEquals)(CGFloat, CGFloat) = ^BOOL(CGFloat a, CGFloat b) {
+        if (!isnan(a) && !isnan(b)) {
+            return ABS(a - b) < 0.0001;
+        }
+        return isnan(a) && isnan(b);
+    };
+    
+    CGFloat pointScaleFactor = JSCoreHelper.displayScale;
+    CGFloat scaledValue = value * pointScaleFactor;
+    CGFloat fractial = fmod(scaledValue, 1.0);
+    if (fractial < 0) {
+        ++fractial;
+    }
+    if (inexactEquals(fractial, 0)) {
+        scaledValue = scaledValue - fractial;
+    } else if (inexactEquals(fractial, 1.0)) {
+        scaledValue = scaledValue - fractial + 1.0;
+    } else if (rule == JSDecimalRoundingRuleCeil) {
+        scaledValue = scaledValue - fractial + 1.0;
+    } else if (rule == JSDecimalRoundingRuleFloor) {
+        scaledValue = scaledValue - fractial;
+    } else if (rule == JSDecimalRoundingRuleRound) {
+        scaledValue = scaledValue - fractial + (!isnan(fractial) && (fractial > 0.5 || inexactEquals(fractial, 0.5)) ? 1.0 : 0.0);
+    } else {
+        NSCAssert(NO, @"");
+    }
+    return isnan(scaledValue) ? 0 : (scaledValue / pointScaleFactor);
 }
 
 CG_INLINE CGFloat
-JSRoundPixelValue(CGFloat value) {
-    CGFloat scale = JSCoreHelper.displayScale;
-    return round(value * scale) / scale;
+JSCeilPixelValue(CGFloat value) {
+    return __JSCGFloatMakePixelValue(value, JSDecimalRoundingRuleCeil);
 }
 
 CG_INLINE CGFloat
 JSFloorPixelValue(CGFloat value) {
-    CGFloat scale = JSCoreHelper.displayScale;
-    return floor(value * scale) / scale;
+    return __JSCGFloatMakePixelValue(value, JSDecimalRoundingRuleFloor);
 }
+
+CG_INLINE CGFloat
+JSRoundPixelValue(CGFloat value) {
+    return __JSCGFloatMakePixelValue(value, JSDecimalRoundingRuleRound);
+}
+
+CG_INLINE CGFloat
+JSCGFloatToFixed(CGFloat value, NSUInteger precision, JSDecimalRoundingRule rule) {
+    if (isnan(value) || isinf(value)) {
+        return value;
+    }
+    double(^handler)(double) = ^double(double value) {
+        switch (rule) {
+            case JSDecimalRoundingRuleRound:
+                return round(value);
+            case JSDecimalRoundingRuleCeil:
+                return ceil(value);
+            case JSDecimalRoundingRuleFloor:
+                return floor(value);
+            default:
+                NSCAssert(NO, @"");
+                return value;
+        }
+    };
+    if (precision == 0) {
+        return handler(value);
+    }
+    
+    double power = pow(10, precision);
+    CGFloat result = value * power;
+    result = handler(result);
+    result = result / power;
+    return result;
+}
+
+CG_INLINE CGFloat
+JSCGFloatEstimated(CGFloat value) {
+    return JSCGFloatToFixed(value, 3, JSDecimalRoundingRuleCeil);
+}
+
+#pragma mark - CGFloat
 
 /// 检测某个数值如果为 NaN 则将其转换为 0，避免布局中出现 crash
 CG_INLINE CGFloat
