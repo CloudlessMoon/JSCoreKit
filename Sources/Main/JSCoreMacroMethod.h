@@ -166,6 +166,43 @@ JSCGSizeIsValidated(CGSize size) {
     return !JSCGSizeIsEmpty(size) && !JSCGSizeIsInf(size) && !JSCGSizeIsNaN(size);
 }
 
+CG_INLINE CGSize
+JSCGSizeCeilPixelValue(CGSize value) {
+    return CGSizeMake(JSCeilPixelValue(value.width), JSCeilPixelValue(value.height));
+}
+
+CG_INLINE CGSize
+JSCGSizeRoundPixelValue(CGSize value) {
+    return CGSizeMake(JSRoundPixelValue(value.width), JSRoundPixelValue(value.height));
+}
+
+CG_INLINE CGSize
+JSCGSizeFloorPixelValue(CGSize value) {
+    return CGSizeMake(JSFloorPixelValue(value.width), JSFloorPixelValue(value.height));
+}
+
+#pragma mark - CGPoint
+
+CG_INLINE CGPoint
+JSCGPointSafeValue(CGPoint value) {
+    return CGPointMake(JSCGFloatSafeValue(value.x), JSCGFloatSafeValue(value.y));
+}
+
+CG_INLINE CGPoint
+JSCGPointCeilPixelValue(CGPoint value) {
+    return CGPointMake(JSCeilPixelValue(value.x), JSCeilPixelValue(value.y));
+}
+
+CG_INLINE CGPoint
+JSCGPointRoundPixelValue(CGPoint value) {
+    return CGPointMake(JSRoundPixelValue(value.x), JSRoundPixelValue(value.y));
+}
+
+CG_INLINE CGPoint
+JSCGPointFloorPixelValue(CGPoint value) {
+    return CGPointMake(JSFloorPixelValue(value.x), JSFloorPixelValue(value.y));
+}
+
 #pragma mark - CGRect
 
 CG_INLINE BOOL
