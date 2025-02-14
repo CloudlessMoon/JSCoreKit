@@ -361,67 +361,20 @@ JSRuntimeOverrideImplementation(Class targetClass, SEL targetSelector, id (^impl
     return YES;
 }
 
-#pragma mark - 线程
-
-DISPATCH_INLINE BOOL
-JSIsMainQueueForQueue(dispatch_queue_t _Nullable queue) {
-    return dispatch_queue_get_label(queue ? : DISPATCH_CURRENT_QUEUE_LABEL) == dispatch_queue_get_label(dispatch_get_main_queue());
-}
-
-#pragma mark - 线程 - Sync
-
-DISPATCH_INLINE void
-JSSyncExecuteOnQueue(dispatch_queue_t queue, dispatch_block_t block) {
-    dispatch_sync(queue, block);
-}
-
-DISPATCH_INLINE void
-JSSyncExecuteOnMainQueue(dispatch_block_t block) {
-    if (JSIsMainQueueForQueue(DISPATCH_CURRENT_QUEUE_LABEL)) {
-        block();
-    } else {
-        JSSyncExecuteOnQueue(dispatch_get_main_queue(), block);
-    }
-}
-
 #pragma mark - 线程 - Async
 
 DISPATCH_INLINE void
-JSAsyncExecuteOnQueue(dispatch_queue_t queue, dispatch_block_t block) {
-    dispatch_async(queue, block);
-}
-
-DISPATCH_INLINE void
-JSAsyncExecuteOnGlobalQueue(dispatch_block_t block){
-    JSAsyncExecuteOnQueue(dispatch_get_global_queue(0, 0), block);
-}
-
-DISPATCH_INLINE void
-JSAsyncExecuteOnMainQueue(dispatch_block_t block) {
-    if (JSIsMainQueueForQueue(DISPATCH_CURRENT_QUEUE_LABEL)) {
+JSCurrentOrAsyncExecuteOnMainThread(dispatch_block_t block) {
+    if (!block) {
+        return;
+    }
+    if (NSThread.isMainThread) {
         block();
     } else {
-        JSAsyncExecuteOnQueue(dispatch_get_main_queue(), block);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            block();
+        });
     }
-}
-
-#pragma mark - 线程 - After
-
-DISPATCH_INLINE void
-JSAfterOnMainQueue(CGFloat delayInSeconds, dispatch_block_t block) {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), block);
-}
-
-#pragma mark - 线程 - Create
-
-DISPATCH_INLINE dispatch_queue_t
-JSCreateSerialQueue(NSString *label) {
-    return dispatch_queue_create(label.UTF8String, DISPATCH_QUEUE_SERIAL);
-}
-
-DISPATCH_INLINE dispatch_queue_t
-JSCreateConcurrentQueue(NSString *label) {
-    return dispatch_queue_create(label.UTF8String, DISPATCH_QUEUE_CONCURRENT);
 }
 
 NS_ASSUME_NONNULL_END

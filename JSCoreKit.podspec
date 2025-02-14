@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name                 = "JSCoreKit"
-  s.version              = "1.0.1"
+  s.version              = "1.0.2"
   s.summary              = "JSCoreKit"
   s.homepage             = "https://github.com/jiasongs/JSCoreKit"
   s.author               = { "jiasong" => "593908937@qq.com" }
