@@ -23,6 +23,7 @@
 #import <JSCoreKit/JSCoreHelper+Animation.h>
 #import <JSCoreKit/JSCoreHelper+Device.h>
 #import <JSCoreKit/JSCoreHelper+LayoutGuide.h>
+#import <JSCoreKit/NSNotificationCenter+JSSubscription.h>
 
 #else
 
@@ -38,6 +39,7 @@
 #import "JSCoreHelper+Animation.h"
 #import "JSCoreHelper+Device.h"
 #import "JSCoreHelper+LayoutGuide.h"
+#import "NSNotificationCenter+JSSubscription.h"
 
 #endif /* __has_include */
 

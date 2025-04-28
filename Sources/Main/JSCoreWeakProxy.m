@@ -15,15 +15,8 @@
 }
 
 - (instancetype)initWithTarget:(id)target {
-    self.target = target;
-    return self;
-}
-
-- (void)setTarget:(id)target {
-    if (target == self) {
-        return;
-    }
     _target = target;
+    return self;
 }
 
 - (id)forwardingTargetForSelector:(SEL)aSelector {

@@ -181,6 +181,17 @@ JSCGSizeFloorPixelValue(CGSize value) {
     return CGSizeMake(JSFloorPixelValue(value.width), JSFloorPixelValue(value.height));
 }
 
+CG_INLINE CGSize
+JSCGSizeToFixed(CGSize value, NSUInteger precision, JSDecimalRoundingRule rule) {
+    return CGSizeMake(JSCGFloatToFixed(value.width, precision, rule),
+                      JSCGFloatToFixed(value.height, precision, rule));
+}
+
+CG_INLINE CGSize
+JSCGSizeEstimated(CGSize value) {
+    return JSCGSizeToFixed(value, 3, JSDecimalRoundingRuleCeil);
+}
+
 #pragma mark - CGPoint
 
 CG_INLINE CGPoint
@@ -201,6 +212,17 @@ JSCGPointRoundPixelValue(CGPoint value) {
 CG_INLINE CGPoint
 JSCGPointFloorPixelValue(CGPoint value) {
     return CGPointMake(JSFloorPixelValue(value.x), JSFloorPixelValue(value.y));
+}
+
+CG_INLINE CGPoint
+JSCGPointToFixed(CGPoint value, NSUInteger precision, JSDecimalRoundingRule rule) {
+    return CGPointMake(JSCGFloatToFixed(value.x, precision, rule),
+                       JSCGFloatToFixed(value.y, precision, rule));
+}
+
+CG_INLINE CGPoint
+JSCGPointEstimated(CGPoint value) {
+    return JSCGPointToFixed(value, 3, JSDecimalRoundingRuleCeil);
 }
 
 #pragma mark - CGRect
@@ -359,6 +381,25 @@ JSRuntimeOverrideImplementation(Class targetClass, SEL targetSelector, id (^impl
     }
     
     return YES;
+}
+
+CG_INLINE BOOL
+JSRuntimeExtendImplementationOfVoidMethodWithoutArguments(Class targetClass, SEL targetSelector, void (^implementationBlock)(__kindof NSObject *selfObject)) {
+    return JSRuntimeOverrideImplementation(targetClass, targetSelector, ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
+        void (^block)(__unsafe_unretained __kindof NSObject *selfObject) = ^(__unsafe_unretained __kindof NSObject *selfObject) {
+            
+            void (*originSelectorIMP)(id, SEL);
+            originSelectorIMP = (void (*)(id, SEL))originalIMPProvider();
+            originSelectorIMP(selfObject, originCMD);
+            
+            implementationBlock(selfObject);
+        };
+#if __has_feature(objc_arc)
+        return block;
+#else
+        return [block copy];
+#endif
+    });
 }
 
 #pragma mark - 线程 - Async
