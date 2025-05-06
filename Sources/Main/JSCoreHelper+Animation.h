@@ -17,8 +17,8 @@ typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
 
 @interface JSCoreHelper (Animation)
 
-@property (class, nonatomic, readonly) UIViewAnimationOptions animationOptionsCurveIn NS_REFINED_FOR_SWIFT;
-@property (class, nonatomic, readonly) UIViewAnimationOptions animationOptionsCurveOut NS_REFINED_FOR_SWIFT;
+@property (class, nonatomic, readonly) UIViewAnimationOptions animationOptionsCurveIn;
+@property (class, nonatomic, readonly) UIViewAnimationOptions animationOptionsCurveOut;
 
 /// 插值器，线性插值 inputRange:[0, 100]  outputRange:[0.5, 1]，用于手势
 + (CGFloat)interpolateValue:(CGFloat)value

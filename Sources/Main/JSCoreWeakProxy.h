@@ -10,7 +10,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-NS_REFINED_FOR_SWIFT
 @interface JSCoreWeakProxy : NSProxy
 
 @property (nullable, nonatomic, weak) id target;
