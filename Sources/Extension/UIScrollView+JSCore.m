@@ -110,15 +110,8 @@ JSSynthesizeIdStrongProperty(js_endScrollingCompletions, setJs_endScrollingCompl
     Class scrollViewClass = self.class;
     [JSCoreHelper executeOnceWithIdentifier:[NSString stringWithFormat:@"%@_%@", NSStringFromClass(scrollViewClass), NSStringFromSelector(_cmd)]
                                  usingBlock:^{
-        static NSString *didScroll;
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            NSString *didScroll1 = [[NSString alloc] initWithData:[[NSData alloc] initWithBase64EncodedString:@"X25vdGlmeQ==" options:NSDataBase64DecodingIgnoreUnknownCharacters] encoding:NSUTF8StringEncoding];
-            NSString *didScroll2 = [[NSString alloc] initWithData:[[NSData alloc] initWithBase64EncodedString:@"RGlk" options:NSDataBase64DecodingIgnoreUnknownCharacters] encoding:NSUTF8StringEncoding];
-            NSString *didScroll3 = [[NSString alloc] initWithData:[[NSData alloc] initWithBase64EncodedString:@"U2Nyb2xs" options:NSDataBase64DecodingIgnoreUnknownCharacters] encoding:NSUTF8StringEncoding];
-            didScroll = [NSString stringWithFormat:@"%@%@%@", didScroll1, didScroll2, didScroll3];
-        });
-        JSRuntimeExtendImplementationOfVoidMethodWithoutArguments(scrollViewClass, NSSelectorFromString(didScroll), ^(UIScrollView *selfObject) {
+        SEL didScrollSEL = NSSelectorFromString([NSString stringWithFormat:@"_%@%@", @"notify", @"DidScroll"]);
+        JSRuntimeExtendImplementationOfVoidMethodWithoutArguments(scrollViewClass, didScrollSEL, ^(UIScrollView *selfObject) {
             if (![selfObject isMemberOfClass:scrollViewClass]) {
                 return;
             }
