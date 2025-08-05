@@ -70,8 +70,7 @@ JSSynthesizeIdStrongProperty(js_endScrollingCompletions, setJs_endScrollingCompl
                 if (!selfObject.js_endScrollingCompletions) {
                     return;
                 }
-                NSArray *completions = selfObject.js_endScrollingCompletions.copy;
-                [completions enumerateObjectsUsingBlock:^(void(^completion)(void), NSUInteger idx, BOOL *stop) {
+                [selfObject.js_endScrollingCompletions.copy enumerateObjectsUsingBlock:^(void(^completion)(void), NSUInteger idx, BOOL *stop) {
                     completion();
                 }];
                 [selfObject.js_endScrollingCompletions removeAllObjects];
