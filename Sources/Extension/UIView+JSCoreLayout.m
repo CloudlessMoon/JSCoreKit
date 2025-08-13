@@ -142,11 +142,11 @@ const CGSize JSCoreViewFixedSizeNone = {-1000, -1000};
     objc_setAssociatedObject(self, @selector(js_fixedSize), @(js_fixedSize), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
     if (!CGSizeEqualToSize(js_fixedSize, JSCoreViewFixedSizeNone)) {
-        self.js_sizeThatFitsBlock = ^CGSize(__kindof UIView *view, CGSize size, CGSize superResult) {
+        self.js_sizeThatFitsBlock = ^CGSize(__kindof UIView *view, CGSize size, CGSize originalValue) {
             if (!CGSizeEqualToSize(view.js_fixedSize, JSCoreViewFixedSizeNone)) {
                 return view.js_fixedSize;
             }
-            return superResult;
+            return originalValue;
         };
         self.js_size = js_fixedSize;
     }

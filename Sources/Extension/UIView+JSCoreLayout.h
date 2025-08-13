@@ -45,7 +45,7 @@ UIKIT_EXTERN const CGSize JSCoreViewFixedSizeNone;
 @property (nonatomic, assign) CGRect js_frameApplyTransform;
 
 /// sizeThatFits
-@property (nullable, nonatomic, copy) CGSize (^js_sizeThatFitsBlock)(__kindof UIView *view, CGSize size, CGSize superResult);
+@property (nullable, nonatomic, copy) CGSize (^js_sizeThatFitsBlock)(__kindof UIView *view, CGSize size, CGSize originalValue);
 
 @end
 
