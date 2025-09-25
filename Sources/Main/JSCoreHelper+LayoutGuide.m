@@ -10,13 +10,9 @@
 @implementation JSCoreHelper (LayoutGuide)
 
 + (CGFloat)displayScale {
-    if (@available(iOS 13.0, *)) {
-        NSAssert(UITraitCollection.currentTraitCollection.displayScale >= 1, @"");
-        CGFloat displayScale = UITraitCollection.currentTraitCollection.displayScale ? : UIScreen.mainScreen.scale;
-        return MAX(displayScale, 1);
-    } else {
-        return MAX(UIScreen.mainScreen.scale, 1);
-    }
+    CGFloat displayScale = UIScreen.mainScreen.traitCollection.displayScale;
+    NSAssert(displayScale >= 1, @"");
+    return MAX(displayScale, 1);
 }
 
 @end
