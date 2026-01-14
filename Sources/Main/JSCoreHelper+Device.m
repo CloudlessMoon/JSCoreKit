@@ -39,8 +39,11 @@
     static BOOL isiOSAppOnVision = NO;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSAssert(NO, @"暂不支持");
-        isiOSAppOnVision = NO;
+        if (@available(iOS 26.1, *)) {
+            isiOSAppOnVision = NSProcessInfo.processInfo.isiOSAppOnVision;
+        } else {
+            isiOSAppOnVision = NSClassFromString(@"UIWindowSceneGeometryPreferencesVision") != nil;
+        }
     });
     return isiOSAppOnVision;
 }

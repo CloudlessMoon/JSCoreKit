@@ -3,7 +3,6 @@
 //  JSCoreKit
 //
 //  Created by jiasong on 2020/12/12.
-//  Copyright © 2020 jiasong. All rights reserved.
 //
 
 #ifndef JSCoreKit_h

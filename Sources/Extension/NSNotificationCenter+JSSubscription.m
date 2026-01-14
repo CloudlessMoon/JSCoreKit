@@ -26,17 +26,18 @@
                                                 object:(nullable id)obj
                                                  queue:(nullable dispatch_queue_t)queue
                                             usingBlock:(void (^)(NSNotification *notification))block {
-    id<NSObject> observer = [self addObserverForName:name object:obj queue:nil usingBlock:^(NSNotification *notification) {
-        if (queue != nil) {
-            dispatch_async(queue, ^{
-                if (block) {
-                    block(notification);
-                }
-            });
+    NSOperationQueue *operationQueue = nil;
+    if (queue != nil) {
+        if (queue == dispatch_get_main_queue()) {
+            operationQueue = NSOperationQueue.mainQueue;
         } else {
-            if (block) {
-                block(notification);
-            }
+            operationQueue = [[NSOperationQueue alloc] init];
+            operationQueue.underlyingQueue = queue;
+        }
+    }
+    id<NSObject> observer = [self addObserverForName:name object:obj queue:operationQueue usingBlock:^(NSNotification *notification) {
+        if (block) {
+            block(notification);
         }
     }];
     return [[JSNotificationCancellable alloc] initWithNotificationCenter:self observer:observer];

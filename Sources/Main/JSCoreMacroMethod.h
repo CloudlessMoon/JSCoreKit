@@ -99,7 +99,7 @@ JSCGFloatToFixed(CGFloat value, NSUInteger precision, JSDecimalRoundingRule rule
 
 CG_INLINE CGFloat
 JSCGFloatEstimated(CGFloat value) {
-    return JSCGFloatToFixed(value, 3, JSDecimalRoundingRuleCeil);
+    return JSCGFloatToFixed(value, 3, JSDecimalRoundingRuleFloor);
 }
 
 #pragma mark - CGFloat

@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (class, nonatomic, readonly) BOOL isMac;
 @property (class, nonatomic, readonly) BOOL isMacCatalystApp;
 @property (class, nonatomic, readonly) BOOL isiOSAppOnMac;
-@property (class, nonatomic, readonly) BOOL isiOSAppOnVision NS_UNAVAILABLE; // Apple未开放相关API
+@property (class, nonatomic, readonly) BOOL isiOSAppOnVision;
 
 @property (class, nonatomic, readonly) BOOL isIPad;
 @property (class, nonatomic, readonly) BOOL isIPod;

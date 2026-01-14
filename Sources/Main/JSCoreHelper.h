@@ -20,13 +20,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (BOOL)executeOnceWithIdentifier:(NSString *)identifier usingBlock:(void (NS_NOESCAPE ^)(void))block;
 
-/** 判断当前版本号和目标版本号
- @param currentVersion 当前版本号
- @param targetVersion 目标版本号
- @return currentVersion大于targetVersion时返回NSOrderedDescending, 相等时返回NSOrderedSame, 小于时返回NSOrderedAscending
- */
-+ (NSComparisonResult)compareVersion:(NSString *)currentVersion toVersion:(NSString *)targetVersion;
-
 @end
 
 NS_ASSUME_NONNULL_END
