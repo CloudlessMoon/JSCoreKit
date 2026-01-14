@@ -28,6 +28,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// - (void)scrollViewDidScroll
 - (JSNotificationCancellable *)js_addDidScrollSubscriber:(void(^)(__kindof UIScrollView *scrollView))subscriber;
 
+/// - (void)adjustedContentInsetDidChange
+- (JSNotificationCancellable *)js_addAdjustedContentInsetSubscriber:(void(^)(__kindof UIScrollView *scrollView))subscriber;
+
 @end
 
 NS_ASSUME_NONNULL_END
