@@ -5,7 +5,7 @@
 //  Created by jiasong on 2021/1/14.
 //
 
-import Foundation
+import UIKit
 
 public struct CoreKitWrapper<Base> {
     

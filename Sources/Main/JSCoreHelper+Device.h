@@ -5,7 +5,7 @@
 //  Created by jiasong on 2023/1/11.
 //
 
-#import <JSCoreKit/JSCoreKit.h>
+#import "JSCoreHelper.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

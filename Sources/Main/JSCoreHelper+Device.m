@@ -6,6 +6,7 @@
 //
 
 #import "JSCoreHelper+Device.h"
+#import <UIKit/UIKit.h>
 
 @implementation JSCoreHelper (Device)
 

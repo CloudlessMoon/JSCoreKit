@@ -6,6 +6,7 @@
 //
 
 #import "JSCoreHelper+LayoutGuide.h"
+#import <UIKit/UIKit.h>
 
 @implementation JSCoreHelper (LayoutGuide)
 
