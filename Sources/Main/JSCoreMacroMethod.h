@@ -372,11 +372,14 @@ JSRuntimeOverrideImplementation(Class targetClass, SEL targetSelector, id (^impl
     if (hasOverride) {
         method_setImplementation(originMethod, imp_implementationWithBlock(implementationBlock(targetClass, targetSelector, originalIMPProvider)));
     } else {
-        NSMethodSignature *signature = [targetClass instanceMethodSignatureForSelector:targetSelector];
-        JSBeginIgnorePerformSelectorLeaksWarning
-        NSString *typeString = [signature performSelector:NSSelectorFromString([NSString stringWithFormat:@"_%@String", @"type"])];
-        JSEndIgnorePerformSelectorLeaksWarning
-        const char *typeEncoding = method_getTypeEncoding(originMethod) ?: typeString.UTF8String;
+        const char *typeEncoding = method_getTypeEncoding(originMethod);
+        if (typeEncoding == NULL) {
+            NSMethodSignature *signature = [targetClass instanceMethodSignatureForSelector:targetSelector];
+            JSBeginIgnorePerformSelectorLeaksWarning
+            NSString *typeString = [signature performSelector:NSSelectorFromString([NSString stringWithFormat:@"_%@String", @"type"])];
+            JSEndIgnorePerformSelectorLeaksWarning
+            typeEncoding = typeString.UTF8String;
+        }
         class_addMethod(targetClass, targetSelector, imp_implementationWithBlock(implementationBlock(targetClass, targetSelector, originalIMPProvider)), typeEncoding);
     }
     
