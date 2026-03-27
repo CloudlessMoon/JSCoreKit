@@ -189,7 +189,7 @@ JSCGSizeToFixed(CGSize value, NSUInteger precision, JSDecimalRoundingRule rule) 
 
 CG_INLINE CGSize
 JSCGSizeEstimated(CGSize value) {
-    return JSCGSizeToFixed(value, 3, JSDecimalRoundingRuleCeil);
+    return JSCGSizeToFixed(value, 3, JSDecimalRoundingRuleFloor);
 }
 
 #pragma mark - CGPoint
@@ -222,7 +222,7 @@ JSCGPointToFixed(CGPoint value, NSUInteger precision, JSDecimalRoundingRule rule
 
 CG_INLINE CGPoint
 JSCGPointEstimated(CGPoint value) {
-    return JSCGPointToFixed(value, 3, JSDecimalRoundingRuleCeil);
+    return JSCGPointToFixed(value, 3, JSDecimalRoundingRuleFloor);
 }
 
 #pragma mark - CGRect

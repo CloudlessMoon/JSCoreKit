@@ -18,11 +18,9 @@
     static BOOL isMacCatalystApp = NO;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        if (@available(iOS 13.0, *)) {
-            isMacCatalystApp = NSProcessInfo.processInfo.isMacCatalystApp;
-        }
+        isMacCatalystApp = NSProcessInfo.processInfo.isMacCatalystApp;
     });
-    return isMacCatalystApp;
+    return isMacCatalystApp && !self.isiOSAppOnMac;
 }
 
 + (BOOL)isiOSAppOnMac {
@@ -31,6 +29,8 @@
     dispatch_once(&onceToken, ^{
         if (@available(iOS 14.0, *)) {
             isiOSAppOnMac = NSProcessInfo.processInfo.isiOSAppOnMac;
+        } else {
+            isiOSAppOnMac = NO;
         }
     });
     return isiOSAppOnMac;
