@@ -13,10 +13,10 @@ public final class WeakProxy<T: AnyObject> {
         return self.ref.target as? T
     }
     
-    private let ref: __RMWeakProxy
+    private let ref: __JSCoreWeakProxy
     
     public init(_ value: T?) {
-        self.ref = __RMWeakProxy(target: value)
+        self.ref = __JSCoreWeakProxy(target: value)
     }
     
 }
