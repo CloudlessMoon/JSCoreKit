@@ -22,12 +22,11 @@
     if (!block || identifier.length == 0) {
         return NO;
     }
-    static dispatch_once_t onceToken;
+    static os_unfair_lock lock = OS_UNFAIR_LOCK_INIT;
     static NSMutableSet<NSString *> *executedIdentifiers;
-    static os_unfair_lock lock;
+    static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         executedIdentifiers = [NSMutableSet set];
-        lock = OS_UNFAIR_LOCK_INIT;
     });
     os_unfair_lock_lock(&lock);
     BOOL result = ![executedIdentifiers containsObject:identifier];
