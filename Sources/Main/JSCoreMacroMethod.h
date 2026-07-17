@@ -53,23 +53,29 @@ __JSCGFloatMakePixelValue(CGFloat value, JSDecimalRoundingRule rule) {
     return isnan(scaledValue) ? 0 : (scaledValue / pointScaleFactor);
 }
 
+/// 检测某个数值如果为 NaN 则将其转换为 0，避免布局中出现 crash
 CG_INLINE CGFloat
-JSCeilPixelValue(CGFloat value) {
+JSCGFloatSafeValue(CGFloat value) {
+    return isnan(value) || isinf(value) ? 0 : value;
+}
+
+CG_INLINE CGFloat
+JSCGFloatCeilPixelValue(CGFloat value) NS_REFINED_FOR_SWIFT {
     return __JSCGFloatMakePixelValue(value, JSDecimalRoundingRuleCeil);
 }
 
 CG_INLINE CGFloat
-JSFloorPixelValue(CGFloat value) {
+JSCGFloatFloorPixelValue(CGFloat value) NS_REFINED_FOR_SWIFT {
     return __JSCGFloatMakePixelValue(value, JSDecimalRoundingRuleFloor);
 }
 
 CG_INLINE CGFloat
-JSRoundPixelValue(CGFloat value) {
+JSCGFloatRoundPixelValue(CGFloat value) NS_REFINED_FOR_SWIFT {
     return __JSCGFloatMakePixelValue(value, JSDecimalRoundingRuleRound);
 }
 
 CG_INLINE CGFloat
-JSCGFloatToFixed(CGFloat value, NSUInteger precision, JSDecimalRoundingRule rule) {
+JSCGFloatToFixed(CGFloat value, NSUInteger precision, JSDecimalRoundingRule rule) NS_REFINED_FOR_SWIFT {
     if (isnan(value) || isinf(value)) {
         return value;
     }
@@ -97,23 +103,35 @@ JSCGFloatToFixed(CGFloat value, NSUInteger precision, JSDecimalRoundingRule rule
     return result;
 }
 
-CG_INLINE CGFloat
-JSCGFloatEstimated(CGFloat value) {
-    return JSCGFloatToFixed(value, 3, JSDecimalRoundingRuleFloor);
-}
-
-#pragma mark - CGFloat
-
-/// 检测某个数值如果为 NaN 则将其转换为 0，避免布局中出现 crash
-CG_INLINE CGFloat
-JSCGFloatSafeValue(CGFloat value) {
-    return isnan(value) || isinf(value) ? 0 : value;
-}
-
 /// 用于居中运算
 CG_INLINE CGFloat
 JSCGFloatGetCenter(CGFloat parent, CGFloat child) {
     return (parent - child) / 2.0;
+}
+
+CG_INLINE BOOL // ==
+JSCGFloatEqualTo(CGFloat lhs, CGFloat rhs) {
+    return ABS(lhs - rhs) <= 0.001;
+}
+
+CG_INLINE BOOL // >
+JSCGFloatGreaterThan(CGFloat lhs, CGFloat rhs) {
+    return lhs - rhs > 0.001;
+}
+
+CG_INLINE BOOL // >=
+JSCGFloatGreaterThanOrEqualTo(CGFloat lhs, CGFloat rhs) {
+    return lhs - rhs >= -0.001;
+}
+
+CG_INLINE BOOL // <
+JSCGFloatLessThan(CGFloat lhs, CGFloat rhs) {
+    return rhs - lhs > 0.001;
+}
+
+CG_INLINE BOOL // <=
+JSCGFloatLessThanOrEqualTo(CGFloat lhs, CGFloat rhs) {
+    return lhs - rhs <= 0.001;
 }
 
 #pragma mark - UIEdgeInsets
@@ -138,6 +156,46 @@ JSUIEdgeInsetsConcat(UIEdgeInsets insets1, UIEdgeInsets insets2) {
     insets1.bottom += insets2.bottom;
     insets1.right += insets2.right;
     return insets1;
+}
+
+CG_INLINE BOOL
+JSUIEdgeInsetsEqualTo(UIEdgeInsets lhs, UIEdgeInsets rhs) NS_SWIFT_UNAVAILABLE("请使用UIEdgeInsets.equal") {
+    return JSCGFloatEqualTo(lhs.top, rhs.top)
+    && JSCGFloatEqualTo(lhs.left, rhs.left)
+    && JSCGFloatEqualTo(lhs.bottom, rhs.bottom)
+    && JSCGFloatEqualTo(lhs.right, rhs.right);
+}
+
+CG_INLINE BOOL
+JSUIEdgeInsetsGreaterThan(UIEdgeInsets lhs, UIEdgeInsets rhs) NS_SWIFT_UNAVAILABLE("请使用UIEdgeInsets.greaterThan") {
+    return JSCGFloatGreaterThan(lhs.top, rhs.top)
+    && JSCGFloatGreaterThan(lhs.left, rhs.left)
+    && JSCGFloatGreaterThan(lhs.bottom, rhs.bottom)
+    && JSCGFloatGreaterThan(lhs.right, rhs.right);
+}
+
+CG_INLINE BOOL
+JSUIEdgeInsetsGreaterThanOrEqualTo(UIEdgeInsets lhs, UIEdgeInsets rhs) NS_SWIFT_UNAVAILABLE("请使用UIEdgeInsets.greaterOrEqual") {
+    return JSCGFloatGreaterThanOrEqualTo(lhs.top, rhs.top)
+    && JSCGFloatGreaterThanOrEqualTo(lhs.left, rhs.left)
+    && JSCGFloatGreaterThanOrEqualTo(lhs.bottom, rhs.bottom)
+    && JSCGFloatGreaterThanOrEqualTo(lhs.right, rhs.right);
+}
+
+CG_INLINE BOOL
+JSUIEdgeInsetsLessThan(UIEdgeInsets lhs, UIEdgeInsets rhs) NS_SWIFT_UNAVAILABLE("请使用UIEdgeInsets.lessThan") {
+    return JSCGFloatLessThan(lhs.top, rhs.top)
+    && JSCGFloatLessThan(lhs.left, rhs.left)
+    && JSCGFloatLessThan(lhs.bottom, rhs.bottom)
+    && JSCGFloatLessThan(lhs.right, rhs.right);
+}
+
+CG_INLINE BOOL
+JSUIEdgeInsetsLessThanOrEqualTo(UIEdgeInsets lhs, UIEdgeInsets rhs) NS_SWIFT_UNAVAILABLE("请使用UIEdgeInsets.lessOrEqual") {
+    return JSCGFloatLessThanOrEqualTo(lhs.top, rhs.top)
+    && JSCGFloatLessThanOrEqualTo(lhs.left, rhs.left)
+    && JSCGFloatLessThanOrEqualTo(lhs.bottom, rhs.bottom)
+    && JSCGFloatLessThanOrEqualTo(lhs.right, rhs.right);
 }
 
 #pragma mark - CGSize
@@ -167,29 +225,49 @@ JSCGSizeIsValidated(CGSize size) {
 }
 
 CG_INLINE CGSize
-JSCGSizeCeilPixelValue(CGSize value) {
-    return CGSizeMake(JSCeilPixelValue(value.width), JSCeilPixelValue(value.height));
+JSCGSizeCeilPixelValue(CGSize value) NS_SWIFT_UNAVAILABLE("请使用CGSize.ceilPixelValue") {
+    return CGSizeMake(JSCGFloatCeilPixelValue(value.width), JSCGFloatCeilPixelValue(value.height));
 }
 
 CG_INLINE CGSize
-JSCGSizeRoundPixelValue(CGSize value) {
-    return CGSizeMake(JSRoundPixelValue(value.width), JSRoundPixelValue(value.height));
+JSCGSizeRoundPixelValue(CGSize value) NS_SWIFT_UNAVAILABLE("请使用CGSize.roundPixelValue") {
+    return CGSizeMake(JSCGFloatRoundPixelValue(value.width), JSCGFloatRoundPixelValue(value.height));
 }
 
 CG_INLINE CGSize
-JSCGSizeFloorPixelValue(CGSize value) {
-    return CGSizeMake(JSFloorPixelValue(value.width), JSFloorPixelValue(value.height));
+JSCGSizeFloorPixelValue(CGSize value) NS_SWIFT_UNAVAILABLE("请使用CGSize.floorPixelValue") {
+    return CGSizeMake(JSCGFloatFloorPixelValue(value.width), JSCGFloatFloorPixelValue(value.height));
 }
 
 CG_INLINE CGSize
-JSCGSizeToFixed(CGSize value, NSUInteger precision, JSDecimalRoundingRule rule) {
+JSCGSizeToFixed(CGSize value, NSUInteger precision, JSDecimalRoundingRule rule) NS_REFINED_FOR_SWIFT {
     return CGSizeMake(JSCGFloatToFixed(value.width, precision, rule),
                       JSCGFloatToFixed(value.height, precision, rule));
 }
 
-CG_INLINE CGSize
-JSCGSizeEstimated(CGSize value) {
-    return JSCGSizeToFixed(value, 3, JSDecimalRoundingRuleFloor);
+CG_INLINE BOOL
+JSCGSizeEqualTo(CGSize lhs, CGSize rhs) NS_SWIFT_UNAVAILABLE("请使用CGSize.equal") {
+    return JSCGFloatEqualTo(lhs.width, rhs.width) && JSCGFloatEqualTo(lhs.height, rhs.height);
+}
+
+CG_INLINE BOOL
+JSCGSizeGreaterThan(CGSize lhs, CGSize rhs) NS_SWIFT_UNAVAILABLE("请使用CGSize.greaterThan") {
+    return JSCGFloatGreaterThan(lhs.width, rhs.width) && JSCGFloatGreaterThan(lhs.height, rhs.height);
+}
+
+CG_INLINE BOOL
+JSCGSizeGreaterThanOrEqualTo(CGSize lhs, CGSize rhs) NS_SWIFT_UNAVAILABLE("请使用CGSize.greaterOrEqual") {
+    return JSCGFloatGreaterThanOrEqualTo(lhs.width, rhs.width) && JSCGFloatGreaterThanOrEqualTo(lhs.height, rhs.height);
+}
+
+CG_INLINE BOOL
+JSCGSizeLessThan(CGSize lhs, CGSize rhs) NS_SWIFT_UNAVAILABLE("请使用CGSize.lessThan") {
+    return JSCGFloatLessThan(lhs.width, rhs.width) && JSCGFloatLessThan(lhs.height, rhs.height);
+}
+
+CG_INLINE BOOL
+JSCGSizeLessThanOrEqualTo(CGSize lhs, CGSize rhs) NS_SWIFT_UNAVAILABLE("请使用CGSize.lessOrEqual") {
+    return JSCGFloatLessThanOrEqualTo(lhs.width, rhs.width) && JSCGFloatLessThanOrEqualTo(lhs.height, rhs.height);
 }
 
 #pragma mark - CGPoint
@@ -200,29 +278,49 @@ JSCGPointSafeValue(CGPoint value) {
 }
 
 CG_INLINE CGPoint
-JSCGPointCeilPixelValue(CGPoint value) {
-    return CGPointMake(JSCeilPixelValue(value.x), JSCeilPixelValue(value.y));
+JSCGPointCeilPixelValue(CGPoint value) NS_SWIFT_UNAVAILABLE("请使用CGPoint.ceilPixelValue") {
+    return CGPointMake(JSCGFloatCeilPixelValue(value.x), JSCGFloatCeilPixelValue(value.y));
 }
 
 CG_INLINE CGPoint
-JSCGPointRoundPixelValue(CGPoint value) {
-    return CGPointMake(JSRoundPixelValue(value.x), JSRoundPixelValue(value.y));
+JSCGPointRoundPixelValue(CGPoint value) NS_SWIFT_UNAVAILABLE("请使用CGPoint.roundPixelValue") {
+    return CGPointMake(JSCGFloatRoundPixelValue(value.x), JSCGFloatRoundPixelValue(value.y));
 }
 
 CG_INLINE CGPoint
-JSCGPointFloorPixelValue(CGPoint value) {
-    return CGPointMake(JSFloorPixelValue(value.x), JSFloorPixelValue(value.y));
+JSCGPointFloorPixelValue(CGPoint value) NS_SWIFT_UNAVAILABLE("请使用CGPoint.floorPixelValue") {
+    return CGPointMake(JSCGFloatFloorPixelValue(value.x), JSCGFloatFloorPixelValue(value.y));
 }
 
 CG_INLINE CGPoint
-JSCGPointToFixed(CGPoint value, NSUInteger precision, JSDecimalRoundingRule rule) {
+JSCGPointToFixed(CGPoint value, NSUInteger precision, JSDecimalRoundingRule rule) NS_REFINED_FOR_SWIFT {
     return CGPointMake(JSCGFloatToFixed(value.x, precision, rule),
                        JSCGFloatToFixed(value.y, precision, rule));
 }
 
-CG_INLINE CGPoint
-JSCGPointEstimated(CGPoint value) {
-    return JSCGPointToFixed(value, 3, JSDecimalRoundingRuleFloor);
+CG_INLINE BOOL
+JSCGPointEqualTo(CGPoint lhs, CGPoint rhs) NS_SWIFT_UNAVAILABLE("请使用CGPoint.equal") {
+    return JSCGFloatEqualTo(lhs.x, rhs.x) && JSCGFloatEqualTo(lhs.y, rhs.y);
+}
+
+CG_INLINE BOOL
+JSCGPointGreaterThan(CGPoint lhs, CGPoint rhs) NS_SWIFT_UNAVAILABLE("请使用CGPoint.greaterThan") {
+    return JSCGFloatGreaterThan(lhs.x, rhs.x) && JSCGFloatGreaterThan(lhs.y, rhs.y);
+}
+
+CG_INLINE BOOL
+JSCGPointGreaterThanOrEqualTo(CGPoint lhs, CGPoint rhs) NS_SWIFT_UNAVAILABLE("请使用CGPoint.greaterOrEqual") {
+    return JSCGFloatGreaterThanOrEqualTo(lhs.x, rhs.x) && JSCGFloatGreaterThanOrEqualTo(lhs.y, rhs.y);
+}
+
+CG_INLINE BOOL
+JSCGPointLessThan(CGPoint lhs, CGPoint rhs) NS_SWIFT_UNAVAILABLE("请使用CGPoint.lessThan") {
+    return JSCGFloatLessThan(lhs.x, rhs.x) && JSCGFloatLessThan(lhs.y, rhs.y);
+}
+
+CG_INLINE BOOL
+JSCGPointLessThanOrEqualTo(CGPoint lhs, CGPoint rhs) NS_SWIFT_UNAVAILABLE("请使用CGPoint.lessOrEqual") {
+    return JSCGFloatLessThanOrEqualTo(lhs.x, rhs.x) && JSCGFloatLessThanOrEqualTo(lhs.y, rhs.y);
 }
 
 #pragma mark - CGRect
@@ -245,6 +343,70 @@ JSCGRectIsValidated(CGRect rect) {
 CG_INLINE CGRect
 JSCGRectSafeValue(CGRect rect) {
     return CGRectMake(JSCGFloatSafeValue(CGRectGetMinX(rect)), JSCGFloatSafeValue(CGRectGetMinY(rect)), JSCGFloatSafeValue(CGRectGetWidth(rect)), JSCGFloatSafeValue(CGRectGetHeight(rect)));
+}
+
+CG_INLINE CGRect
+JSCGRectPixelValue(CGRect value) NS_SWIFT_UNAVAILABLE("请使用CGRect.pixelValue") {
+    return CGRectMake(JSCGFloatRoundPixelValue(value.origin.x),
+                      JSCGFloatRoundPixelValue(value.origin.y),
+                      JSCGFloatCeilPixelValue(value.size.width),
+                      JSCGFloatCeilPixelValue(value.size.height));
+}
+
+CG_INLINE CGRect
+JSCGRectCeilPixelValue(CGRect value) NS_SWIFT_UNAVAILABLE("请使用CGRect.ceilPixelValue") {
+    return CGRectMake(JSCGFloatCeilPixelValue(value.origin.x),
+                      JSCGFloatCeilPixelValue(value.origin.y),
+                      JSCGFloatCeilPixelValue(value.size.width),
+                      JSCGFloatCeilPixelValue(value.size.height));
+}
+
+CG_INLINE CGRect
+JSCGRectRoundPixelValue(CGRect value) NS_SWIFT_UNAVAILABLE("请使用CGRect.roundPixelValue") {
+    return CGRectMake(JSCGFloatRoundPixelValue(value.origin.x),
+                      JSCGFloatRoundPixelValue(value.origin.y),
+                      JSCGFloatRoundPixelValue(value.size.width),
+                      JSCGFloatRoundPixelValue(value.size.height));
+}
+
+CG_INLINE CGRect
+JSCGRectFloorPixelValue(CGRect value) NS_SWIFT_UNAVAILABLE("请使用CGRect.floorPixelValue") {
+    return CGRectMake(JSCGFloatFloorPixelValue(value.origin.x),
+                      JSCGFloatFloorPixelValue(value.origin.y),
+                      JSCGFloatFloorPixelValue(value.size.width),
+                      JSCGFloatFloorPixelValue(value.size.height));
+}
+
+CG_INLINE CGRect
+JSCGRectToFixed(CGRect value, NSUInteger precision, JSDecimalRoundingRule rule) NS_REFINED_FOR_SWIFT {
+    CGPoint origin = JSCGPointToFixed(value.origin, precision, rule);
+    CGSize size = JSCGSizeToFixed(value.size, precision, rule);
+    return CGRectMake(origin.x, origin.y, size.width, size.height);
+}
+
+CG_INLINE BOOL
+JSCGRectEqualTo(CGRect lhs, CGRect rhs) NS_SWIFT_UNAVAILABLE("请使用CGRect.equal") {
+    return JSCGPointEqualTo(lhs.origin, rhs.origin) && JSCGSizeEqualTo(lhs.size, rhs.size);
+}
+
+CG_INLINE BOOL
+JSCGRectGreaterThan(CGRect lhs, CGRect rhs) NS_SWIFT_UNAVAILABLE("请使用CGRect.greaterThan") {
+    return JSCGPointGreaterThan(lhs.origin, rhs.origin) && JSCGSizeGreaterThan(lhs.size, rhs.size);
+}
+
+CG_INLINE BOOL
+JSCGRectGreaterThanOrEqualTo(CGRect lhs, CGRect rhs) NS_SWIFT_UNAVAILABLE("请使用CGRect.greaterOrEqual") {
+    return JSCGPointGreaterThanOrEqualTo(lhs.origin, rhs.origin) && JSCGSizeGreaterThanOrEqualTo(lhs.size, rhs.size);
+}
+
+CG_INLINE BOOL
+JSCGRectLessThan(CGRect lhs, CGRect rhs) NS_SWIFT_UNAVAILABLE("请使用CGRect.lessThan") {
+    return JSCGPointLessThan(lhs.origin, rhs.origin) && JSCGSizeLessThan(lhs.size, rhs.size);
+}
+
+CG_INLINE BOOL
+JSCGRectLessThanOrEqualTo(CGRect lhs, CGRect rhs) NS_SWIFT_UNAVAILABLE("请使用CGRect.lessOrEqual") {
+    return JSCGPointLessThanOrEqualTo(lhs.origin, rhs.origin) && JSCGSizeLessThanOrEqualTo(lhs.size, rhs.size);
 }
 
 CG_INLINE CGRect
