@@ -62,19 +62,17 @@
 }
 
 - (void)cancel {
-    [self addLock];
-    if (self.notificationCenter && self.observer) {
-        [self.notificationCenter removeObserver:self.observer];
-        self.observer = nil;
-    }
-    [self unLock];
+    [self withLock:^{
+        if (self.notificationCenter && self.observer) {
+            [self.notificationCenter removeObserver:self.observer];
+            self.observer = nil;
+        }
+    }];
 }
 
-- (void)addLock {
+- (void)withLock:(void(NS_NOESCAPE ^)(void))work {
     os_unfair_lock_lock(&_lock);
-}
-
-- (void)unLock {
+    work();
     os_unfair_lock_unlock(&_lock);
 }
 
