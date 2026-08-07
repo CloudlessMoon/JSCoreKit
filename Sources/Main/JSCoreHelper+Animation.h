@@ -11,9 +11,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSInteger, JSCoreAnimationExtrapolateType) {
-    JSCoreAnimationExtrapolateTypeIdentity = 0,
-    JSCoreAnimationExtrapolateTypeClamp,
+    JSCoreAnimationExtrapolateTypeClamp = 0,
     JSCoreAnimationExtrapolateTypeExtend,
+    JSCoreAnimationExtrapolateTypeIdentity,
 };
 
 @interface JSCoreHelper (Animation)
