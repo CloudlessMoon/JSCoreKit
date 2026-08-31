@@ -8,7 +8,7 @@ end
 target "JSCoreKitExample" do
   pod_Common
   pod 'SwiftLint', :configurations => ['Debug']
-  pod "LookinServer", :configurations => ["Debug"]
+  pod "LookInsideServer", :git => "https://github.com/LookInsideApp/LookInside-Release.git", :configurations => ['Debug']
   pod "MLeaksFinder", :git => "https://github.com/Tencent/MLeaksFinder.git", :configurations => ["Debug"]
 end
 
