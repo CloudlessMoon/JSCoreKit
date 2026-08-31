@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.homepage         = "https://github.com/CloudlessMoon/JSCoreKit"
   s.license          = "MIT"
   s.author           = { "jiasong" => "593908937@qq.com" }
-  s.source           = { :git => "https://github.com/CloudlessMoon/JSCoreKit.git", :tag => "#{s.version}" }
+  s.source           = { :git => "https://github.com/CloudlessMoon/JSCoreKit.git", :tag => s.version.to_s }
   
   s.source_files = "Sources/**/*.{h,m,swift}"
 end
