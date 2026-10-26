@@ -6,21 +6,30 @@
 //
 
 #import "UIScrollView+JSCore.h"
-#import "NSNotificationCenter+JSSubscription.h"
 #import "JSCoreMacroMethod.h"
 #import "UIView+JSCoreLayout.h"
 
 @interface UIScrollView (__JSCore)
 
-@property (nullable, nonatomic, strong) NSNotificationCenter *js_scrollViewNotificationCenter;
+@property (nullable, nonatomic, strong) NSMutableDictionary<NSString *, NSMutableDictionary<NSString *, JSScrollViewDelegateSubscriber> *> *js_scrollDelegateSubscribers;
 
 @property (nullable, nonatomic, strong) NSMutableArray *js_endScrollingCompletions;
 
 @end
 
+@interface JSScrollViewDelegateCancellable ()
+
+@property (nullable, nonatomic, copy) NSString *identifier;
+@property (nullable, nonatomic, weak) UIScrollView *view;
+@property (nullable, nonatomic, copy) NSString *name;
+
+- (instancetype)initWithIdentifier:(nullable NSString *)identifier view:(nullable UIScrollView *)view name:(nullable NSString *)name;
+
+@end
+
 @implementation UIScrollView (JSCore)
 
-JSSynthesizeIdStrongProperty(js_scrollViewNotificationCenter, setJs_scrollViewNotificationCenter)
+JSSynthesizeIdStrongProperty(js_scrollDelegateSubscribers, setJs_scrollDelegateSubscribers)
 JSSynthesizeIdStrongProperty(js_endScrollingCompletions, setJs_endScrollingCompletions)
 
 - (BOOL)js_canScroll {
@@ -91,71 +100,118 @@ JSSynthesizeIdStrongProperty(js_endScrollingCompletions, setJs_endScrollingCompl
     [self js_setContentOffset:CGPointMake(x, y) animated:animated completion:completion];
 }
 
-- (JSNotificationCancellable *)js_addDidScrollSubscriber:(void(^)(__kindof UIScrollView *scrollView))subscriber {
-    static const NSNotificationName JSCoreScrollViewDidScrollKey = @"JSCoreScrollViewDidScrollKey";
-    
-    if (!self.js_scrollViewNotificationCenter) {
-        self.js_scrollViewNotificationCenter = [[NSNotificationCenter alloc] init];
-    }
-    __weak __typeof(self) weakSelf = self;
-    JSNotificationCancellable *cancellable = [self.js_scrollViewNotificationCenter js_addSubscriberForName:JSCoreScrollViewDidScrollKey
-                                                                                                    object:self
-                                                                                                     queue:nil
-                                                                                                usingBlock:^(NSNotification *notification) {
-        if (subscriber && weakSelf && notification.object == weakSelf) {
-            subscriber(weakSelf);
-        }
-    }];
-    
-    Class scrollViewClass = self.class;
-    [JSCoreHelper executeOnceWithIdentifier:[NSString stringWithFormat:@"%@_%@", NSStringFromClass(scrollViewClass), NSStringFromSelector(_cmd)]
-                                 usingBlock:^{
-        SEL didScrollSEL = NSSelectorFromString([NSString stringWithFormat:@"_%@%@", @"notify", @"DidScroll"]);
-        JSRuntimeExtendImplementationOfVoidMethodWithoutArguments(scrollViewClass, didScrollSEL, ^(UIScrollView *selfObject) {
-            if (![selfObject isMemberOfClass:scrollViewClass]) {
-                return;
-            }
-            if (!selfObject.js_scrollViewNotificationCenter) {
-                return;
-            }
-            [selfObject.js_scrollViewNotificationCenter postNotificationName:JSCoreScrollViewDidScrollKey object:selfObject];
-        });
-    }];
-    
-    return cancellable;
+- (JSScrollViewDelegateCancellable *)js_addDidScrollSubscriber:(JSScrollViewDelegateSubscriber)subscriber {
+    static SEL selector;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        selector = NSSelectorFromString([NSString stringWithFormat:@"_%@%@", @"notify", @"DidScroll"]);
+    });
+    return [self js_addScrollDelegateForName:@"JSCoreScrollViewDidScrollKey"
+                                    selector:selector
+                                  subscriber:subscriber];
 }
 
-- (JSNotificationCancellable *)js_addAdjustedContentInsetSubscriber:(void(^)(__kindof UIScrollView *scrollView))subscriber {
-    static const NSNotificationName JSCoreScrollViewAdjustedContentInsetKey = @"JSCoreScrollViewAdjustedContentInsetKey";
-    
-    if (!self.js_scrollViewNotificationCenter) {
-        self.js_scrollViewNotificationCenter = [[NSNotificationCenter alloc] init];
+- (JSScrollViewDelegateCancellable *)js_addAdjustedContentInsetSubscriber:(JSScrollViewDelegateSubscriber)subscriber {
+    static SEL selector;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        selector = @selector(adjustedContentInsetDidChange);
+    });
+    return [self js_addScrollDelegateForName:@"JSCoreScrollViewAdjustedContentInsetKey"
+                                    selector:selector
+                                  subscriber:subscriber];
+}
+
+#pragma mark - Private
+
+- (JSScrollViewDelegateCancellable *)js_addScrollDelegateForName:(NSString * const)name
+                                                        selector:(const SEL)selector
+                                                      subscriber:(JSScrollViewDelegateSubscriber)subscriber {
+    if (!subscriber) {
+        NSAssert(NO, @"");
+        return [[JSScrollViewDelegateCancellable alloc] initWithIdentifier:nil view:nil name:nil];
     }
-    __weak __typeof(self) weakSelf = self;
-    JSNotificationCancellable *cancellable = [self.js_scrollViewNotificationCenter js_addSubscriberForName:JSCoreScrollViewAdjustedContentInsetKey
-                                                                                                    object:self
-                                                                                                     queue:nil
-                                                                                                usingBlock:^(NSNotification *notification) {
-        if (subscriber && weakSelf && notification.object == weakSelf) {
-            subscriber(weakSelf);
-        }
-    }];
-    
+
+    static NSUInteger subscriberIdentifier = 0;
+    subscriberIdentifier = subscriberIdentifier + 1;
+
+    NSString *identifier = @(subscriberIdentifier).stringValue;
+    [self __js_setScrollDelegateSubscriber:subscriber forIdentifier:identifier name:name];
+
     Class scrollViewClass = self.class;
-    [JSCoreHelper executeOnceWithIdentifier:[NSString stringWithFormat:@"%@_%@", NSStringFromClass(scrollViewClass), NSStringFromSelector(_cmd)]
+    [JSCoreHelper executeOnceWithIdentifier:[NSString stringWithFormat:@"%@_%@", NSStringFromClass(scrollViewClass), name]
                                  usingBlock:^{
-        JSRuntimeExtendImplementationOfVoidMethodWithoutArguments(scrollViewClass, @selector(adjustedContentInsetDidChange), ^(UIScrollView *selfObject) {
+        JSRuntimeExtendImplementationOfVoidMethodWithoutArguments(scrollViewClass, selector, ^(UIScrollView *selfObject) {
             if (![selfObject isMemberOfClass:scrollViewClass]) {
                 return;
             }
-            if (!selfObject.js_scrollViewNotificationCenter) {
-                return;
-            }
-            [selfObject.js_scrollViewNotificationCenter postNotificationName:JSCoreScrollViewAdjustedContentInsetKey object:selfObject];
+            [selfObject __js_callScrollDelegateSubscribersForName:name];
         });
     }];
-    
-    return cancellable;
+
+    return [[JSScrollViewDelegateCancellable alloc] initWithIdentifier:identifier view:self name:name];
+}
+
+- (void)__js_setScrollDelegateSubscriber:(nullable JSScrollViewDelegateSubscriber)subscriber forIdentifier:(NSString *)identifier name:(NSString *)name {
+    if (!self.js_scrollDelegateSubscribers) {
+        self.js_scrollDelegateSubscribers = [NSMutableDictionary dictionary];
+    }
+    NSMutableDictionary *subscribers = self.js_scrollDelegateSubscribers[name];
+    if (!subscribers) {
+        subscribers = [NSMutableDictionary dictionary];
+        self.js_scrollDelegateSubscribers[name] = subscribers;
+    }
+    [subscribers setValue:subscriber forKey:identifier];
+}
+
+- (void)__js_removeScrollDelegateSubscriberForIdentifier:(NSString *)identifier name:(NSString *)name {
+    if (!self.js_scrollDelegateSubscribers || !identifier) {
+        return;
+    }
+    NSMutableDictionary *subscribers = self.js_scrollDelegateSubscribers[name];
+    if (!subscribers) {
+        return;
+    }
+    [subscribers removeObjectForKey:identifier];
+    if (subscribers.count == 0) {
+        [self.js_scrollDelegateSubscribers removeObjectForKey:name];
+    }
+}
+
+- (void)__js_callScrollDelegateSubscribersForName:(NSString *)name {
+    NSMutableDictionary *subscribers = self.js_scrollDelegateSubscribers[name];
+    if (subscribers.count == 0) {
+        return;
+    }
+    [subscribers enumerateKeysAndObjectsUsingBlock:^(NSString *key, JSScrollViewDelegateSubscriber subscriber, BOOL *stop) {
+        if (subscriber) {
+            subscriber(self);
+        }
+    }];
+}
+
+@end
+
+@implementation JSScrollViewDelegateCancellable
+
+- (instancetype)initWithIdentifier:(nullable NSString *)identifier view:(nullable UIScrollView *)view name:(nullable NSString *)name {
+    if (self = [super init]) {
+        self.identifier = identifier;
+        self.view = view;
+        self.name = name;
+    }
+    return self;
+}
+
+- (void)dealloc {
+    [self cancel];
+}
+
+- (void)cancel {
+    if (self.view && self.identifier && self.name) {
+        [self.view __js_removeScrollDelegateSubscriberForIdentifier:self.identifier name:self.name];
+        self.identifier = nil;
+    }
 }
 
 @end

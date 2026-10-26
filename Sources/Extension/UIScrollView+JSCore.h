@@ -7,9 +7,11 @@
 
 #import <UIKit/UIKit.h>
 
-@class JSNotificationCancellable;
+@class JSScrollViewDelegateCancellable;
 
 NS_ASSUME_NONNULL_BEGIN
+
+typedef void(^JSScrollViewDelegateSubscriber)(__kindof UIScrollView *scrollView) NS_SWIFT_UNAVAILABLE("");
 
 @interface UIScrollView (JSCore)
 
@@ -26,10 +28,19 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)js_scrollToOffset:(CGPoint)offset animated:(BOOL)animated completion:(nullable void(^)(void))completion;
 
 /// - (void)scrollViewDidScroll
-- (JSNotificationCancellable *)js_addDidScrollSubscriber:(void(^)(__kindof UIScrollView *scrollView))subscriber;
+- (JSScrollViewDelegateCancellable *)js_addDidScrollSubscriber:(JSScrollViewDelegateSubscriber)subscriber;
 
 /// - (void)adjustedContentInsetDidChange
-- (JSNotificationCancellable *)js_addAdjustedContentInsetSubscriber:(void(^)(__kindof UIScrollView *scrollView))subscriber;
+- (JSScrollViewDelegateCancellable *)js_addAdjustedContentInsetSubscriber:(JSScrollViewDelegateSubscriber)subscriber;
+
+@end
+
+@interface JSScrollViewDelegateCancellable : NSObject
+
+- (instancetype)init NS_UNAVAILABLE;
++ (instancetype)new NS_UNAVAILABLE;
+
+- (void)cancel;
 
 @end
 
